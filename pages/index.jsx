@@ -13,8 +13,8 @@ export default function HomePage() {
         </div>
         <div className={styles.foreground}>
           <div className={styles.content}>
-            <h1 className={styles.name}>Kostas Georgiou</h1>
-            <h6 className={styles.bio}>AI Research Engineer</h6>
+            <h1 className={styles.name}>Emanuel Nibizi</h1>
+            <h6 className={styles.bio}>Computer Science Undergraduate</h6>
             <div className={styles.cardContainer}>
               <div className={styles.card}>
                 <div className={styles.content}>
@@ -75,10 +75,10 @@ export default function HomePage() {
             <div className={styles.picture_boader}>
               <Image
                 className={styles.picture}
-                src="/me.jpeg"
+                src="/me.png"
                 width={300}
                 height={300}
-                alt="Kostas' Picture"
+                alt="Spaceman"
               />
             </div>
 

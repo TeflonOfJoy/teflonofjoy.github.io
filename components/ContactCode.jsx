@@ -3,33 +3,23 @@ import styles from '../styles/ContactCode.module.css';
 const contactItems = [
   {
     social: 'Email',
-    link: 'georgiou.kostas94@gmail.com',
-    href: 'mailto:georgiou.kostas94@gmail.com',
+    link: 'emanuel.nibizi@unito.edu.it',
+    href: 'mailto:emanuel.nibizi@unito.edu.it',
   },
   {
-    social: 'LinkedIn',
-    link: 'linkedin.com/in/gkos',
-    href: 'https://www.linkedin.com/in/gkos/',
+    social: 'Matrix',
+    link: 'matrix.to/#/@teflonofjoy:matrix.org',
+    href: 'https://matrix.to/#/@teflonofjoy:matrix.org',
   },
   {
     social: 'GitHub',
-    link: 'github.com/drkostas',
-    href: 'https://github.com/drkostas',
-  },
-  {
-    social: 'Google Scholar',
-    link: 'scholar.google.com/<gkos>',
-    href: 'https://scholar.google.com/citations?user=b___QQ8AAAAJ&hl=en&authuser=1&oi=sra',
-  },
-  {
-    social: 'PyPi',
-    link: 'pypi.org/user/drkostas',
-    href: 'https://pypi.org/user/drkostas/',
+    link: 'github.com/teflonofjoy',
+    href: 'https://github.com/teflonofjoy',
   },
   {
     social: 'Website',
-    link: 'gkos.dev',
-    href: 'https://gkos.dev',
+    link: 'teflonofjoy.com',
+    href: 'https://teflonofjoy.com',
   },
 ];
 
@@ -40,7 +30,7 @@ const ContactCode = () => {
        tag: <a>production</a>
         </p>
       <p className={styles.line}>
-        <span>kostas</span>&#58;
+        <span>emanuel</span>&#58;
       </p>
       <p className={styles.line}>
         &nbsp;&nbsp;&nbsp;&#8212; <span>socials</span>&#58;

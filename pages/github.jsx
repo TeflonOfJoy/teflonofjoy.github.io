@@ -15,7 +15,7 @@ const GithubPage = ({ repos, user }) => {
 
   return (
     <>
-      <a href="https://github.com/drkostas" target="_blank" rel="noopener" className={styles.no_color}>
+      <a href="https://github.com/teflonofjoy" target="_blank" rel="noopener" className={styles.no_color}>
         <div className={styles.user}>
           <div>
             <Image
@@ -92,10 +92,10 @@ export async function getStaticProps() {
   repos.push(additionalRepo);
   repos = repos
     .sort((a, b) => {
-      if (a.html_url.includes('EESTech') || a.html_url.includes('COSC') || a.html_url.includes('/drkostas/drkostas')) {
+      if (a.html_url.includes('EESTech') || a.html_url.includes('COSC') || a.html_url.includes('/teflonofjoy/teflonofjoy')) {
         return b
       }
-      if (b.html_url.includes('EESTech') || b.html_url.includes('COSC') || b.html_url.includes('/drkostas/drkostas')) {
+      if (b.html_url.includes('EESTech') || b.html_url.includes('COSC') || b.html_url.includes('/teflonofjoy/teflonofjoy')) {
         return a
       }
 
