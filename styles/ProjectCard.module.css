@@ -4,10 +4,12 @@
   flex-direction: column;
   border-radius: 20px;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .card img {
-  filter: grayscale(70%);
+  max-width: 100%;
+  height: auto;
 }
 
 .card:hover {

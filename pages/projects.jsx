@@ -2,7 +2,7 @@ import ProjectCard from '../components/ProjectCard';
 import { getBotsProjects } from './api/bots-projects';
 import styles from '../styles/ProjectsPage.module.css';
 
-const ProjectsPage = ({ ml_projects, bots_projects, pypi_projects, misc_projects }) => {
+const ProjectsPage = ({ bots_projects }) => {
   return (
     <>
       <h3>Open Source Projects</h3>
