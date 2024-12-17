@@ -30,7 +30,7 @@ const ContactCode = () => {
        tag: <a>production</a>
         </p>
       <p className={styles.line}>
-        <span>emanuel</span>&#58;
+        <span>TeflonOfJoy</span>&#58;
       </p>
       <p className={styles.line}>
         &nbsp;&nbsp;&nbsp;&#8212; <span>socials</span>&#58;
