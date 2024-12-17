@@ -161,12 +161,29 @@
   background: rgba(0, 0, 0, 0.25);
 }
 
-.Apache-Spark {
-  border: 0.1rem solid rgb(170, 170, 248);
+.Apache-Kafka {
+  border: 0.1rem solid rgb(255, 255, 255);
 }
 
-.Apache-Spark:hover {
-  background: rgba(170, 170, 248, 0.25);
+.Apache-Kafka:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.Apache-Maven {
+  border: 0.1rem solid rgb(255, 255, 255);
+  background: linear-gradient(90deg, 
+    rgba(255,102,51,1) 0%,         /* Orange */
+    rgba(197,47,104,1) 50%,        /* Pinkish-red */
+    rgba(146,35,120,1) 100%        /* Purplish tone */
+  );
+}
+
+.Apache-Maven:hover {
+  background: linear-gradient(90deg, 
+    rgba(255,102,51,0.25) 0%,        /* Orange with opacity */
+    rgba(197,47,104,0.25) 50%,       /* Pinkish-red with opacity */
+    rgba(146,35,120,0.25) 100%       /* Purplish tone with opacity */
+  );
 }
 
 .Social-Networks {
