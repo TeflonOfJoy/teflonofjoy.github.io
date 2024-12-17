@@ -169,28 +169,8 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
-.Apache-Maven {
-  position: relative;
-  border: 0.1rem solid transparent; /* Keep the border transparent */
-  border-radius: 50%; /* Oval shape */
-  background: #fff; /* Optional: set a default white background */
-  overflow: hidden; /* Ensures pseudo-element doesn't overflow */
-}
-
-.Apache-Maven::before {
-  content: "";
-  position: absolute;
-  top: -0.1rem;
-  left: -0.1rem;
-  right: -0.1rem;
-  bottom: -0.1rem;
-  z-index: -1;
-  border-radius: 50%; /* Maintain the oval shape */
-  background: linear-gradient(90deg, 
-    rgba(255,102,51,1) 0%,          /* Orange */
-    rgba(197,47,104,1) 50%,         /* Pinkish-red */
-    rgba(146,35,120,1) 100%         /* Purplish tone */
-  );
+.Apache-Kafka {
+  border: 0.1rem solid rgb(255, 102, 51);
 }
 
 .Apache-Maven:hover {
