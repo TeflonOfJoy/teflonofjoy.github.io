@@ -170,12 +170,12 @@
 }
 
 .Apache-Maven {
-  border: 0.1rem solid rgb(255, 255, 255);
-  background: linear-gradient(90deg, 
+  border: 0.1rem solid transparent; /* Transparent fallback */
+  border-image: linear-gradient(90deg, 
     rgba(255,102,51,1) 0%,         /* Orange */
     rgba(197,47,104,1) 50%,        /* Pinkish-red */
     rgba(146,35,120,1) 100%        /* Purplish tone */
-  );
+  ) 1; /* Gradient applied to border */
 }
 
 .Apache-Maven:hover {
