@@ -3,8 +3,8 @@ import styles from '../styles/ContactCode.module.css';
 const contactItems = [
   {
     social: 'Email',
-    link: 'emanuel.nibizi@unito.edu.it',
-    href: 'mailto:emanuel.nibizi@unito.edu.it',
+    link: 'emanuel.nibizi@teflonofjoy.com',
+    href: 'mailto:emanuel.nibizi@teflonofjoy.com',
   },
   {
     social: 'Matrix',
