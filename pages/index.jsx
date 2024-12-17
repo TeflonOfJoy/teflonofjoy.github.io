@@ -8,8 +8,8 @@ export default function HomePage() {
     <>
       <div className={styles.container}>
         <div className={styles.background}>
-          <h1>AI</h1>
-          <h1>Research</h1>
+          <h1>Computer</h1>
+          <h1>Science</h1>
         </div>
         <div className={styles.foreground}>
           <div className={styles.content}>
@@ -20,41 +20,35 @@ export default function HomePage() {
                 <div className={styles.content}>
                   <h4>Skill Set</h4>
                   <div className={styles.tags}>
-                    <span key='Research' className='Research'>
-                      Research
+                    <span key='Computer-Science' className='Computer-Science'>
+                      Computer-Science
                     </span>
-                    <span key='Computer-Vision' className='Computer-Vision'>
-                      Computer-Vision
+                    <span key='C' className='C'>
+                      C
                     </span>
-                    <span key='MIM' className='MIM'>
-                      Masked-Image-Modeling
+                    <span key='Python' className='Python'>
+                      Python
                     </span>
-                    <span key='LLMs' className='LLMs'>
-                      LLMs
+                    <span key='Software-Design' className='Software-Design'>
+                      Software-Design
                     </span>
-                    <span key='GenAI' className='GenAI'>
-                      Generative AI
+                    <span key='Apache-Kafka' className='Apache-Kafka'>
+                      Apache-Kafka
                     </span>
-                    <span key='PyTorch' className='PyTorch'>
-                      PyTorch
+                    <span key='Apache-Maven' className='Apache-Maven'>
+                      Apache-Maven
                     </span>
-                    <span key='Tensorflow' className='Tensorflow'>
-                      Tensorflow
-                    </span>
-                    <span key='Apache-Spark' className='Apache-Spark'>
-                      Apache-Spark
+                    <span key='Spring-Boot' className='Spring-Boot'>
+                      Spring-Boot
                     </span>
                     <span key='SQL' className='SQL'>
                       SQL
                     </span>
-                    <span key='MLOps' className='MLOps'>
-                      MLOps
-                    </span>
-                    <span key='Software-Design' className='Software-Design'>
-                      Software-Engineering
-                    </span>
                     <span key='Bots' className='Bots'>
                       Bots
+                    </span>
+                    <span key='APIs' className='APIs'>
+                      Docker
                     </span>
                   </div>
                 </div>
@@ -63,9 +57,9 @@ export default function HomePage() {
             <Link href="/resume">
               <button className={styles.button}>Resume</button>
             </Link>
-            {/* <Link href="/projects">
-              <button className={styles.button}>View Projects</button>
-            </Link> */}
+            <Link href="https://blog.teflonofjoy.com/">
+              <button className={styles.button}>My Blog</button>
+            </Link>
             <Link href="/contact">
               <button className={styles.outlined}>Contact</button>
             </Link>
