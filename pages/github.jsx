@@ -77,19 +77,9 @@ export async function getStaticProps() {
       },
     }
   );
-  const additionalRepoRes = await fetch(
-    `https://api.github.com/repos/aicip/Cross-Scale-MAE`,
-    {
-      headers: {
-        Authorization: `token ${process.env.GITHUB_API_KEY}`,
-      },
-    }
-  );
+  
   let repos = await repoRes.json();
-  const additionalRepo = await additionalRepoRes.json();
 
-  // Add the specified repo explicitly
-  repos.push(additionalRepo);
   repos = repos
     .sort((a, b) => {
       if (a.html_url.includes('EESTech') || a.html_url.includes('COSC') || a.html_url.includes('/teflonofjoy/teflonofjoy')) {
