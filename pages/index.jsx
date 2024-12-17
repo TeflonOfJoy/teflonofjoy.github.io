@@ -77,7 +77,7 @@ export default function HomePage() {
                 className={styles.picture}
                 src="/me.png"
                 width={300}
-                height={300}
+                height={290}
                 alt="Spaceman"
               />
             </div>
