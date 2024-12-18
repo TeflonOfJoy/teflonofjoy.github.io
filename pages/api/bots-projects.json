@@ -4,7 +4,7 @@
     "name": "Arcane Vynil Bot",
     "image": "/jinx.jpg",
     "description": "A bot that checks the Arcane shop and sees if a Vynil is available for purchase.",
-    "tags": ["Merch", "Arcane", "Vynil", "Universal", "Scraping"],
+    "tags": ["Merch", "Arcane", "Vynil", "Universal", "Scraper"],
     "source_code": "https://github.com/teflonofjoy/ArcaneVynilBot"
   }
 ]

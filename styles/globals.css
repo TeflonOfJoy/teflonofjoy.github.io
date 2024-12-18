@@ -629,6 +629,14 @@
   background: rgba(232, 255, 118, 0.25);
 }
 
+.Computer-Science {
+  border: 0.1rem solid rgb(32, 255, 147);
+}
+
+.Computer-Science:hover {
+  background: rgba(32, 255, 255, 0.25);
+}
+
 .MIM {
   border: 0.1rem solid rgb(118, 184, 255);
 }
@@ -643,6 +651,22 @@
 
 .SQL:hover {
   background: rgba(255, 118, 214, 0.25);
+}
+
+.Spring-Boot {
+  border: 0.1rem solid rgb(232, 255, 118);
+}
+
+.Spring-Boot:hover {
+  background: rgba(232, 255, 118, 0.25);
+}
+
+.C {
+  border: 0.1rem solid rgb(118, 184, 255);
+}
+
+.C:hover {
+  background: rgba(118, 180, 255, 0.25);
 }
 
 /* PDF */
