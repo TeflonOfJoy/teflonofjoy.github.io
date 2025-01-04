@@ -272,11 +272,21 @@
 
 @media only screen and (max-width: 1100px) {
   .cardContainer {
-    display: none;
+    grid-template-columns: 1fr;
+    max-width: 90%;
+    margin: 1.5rem auto;
   }
 
   .right {
     display: none;
+  }
+}
+
+/* Add additional mobile optimization */
+@media only screen and (max-width: 600px) {
+  .cardContainer {
+    margin: 1rem auto;
+    gap: 1rem;
   }
 }
 
