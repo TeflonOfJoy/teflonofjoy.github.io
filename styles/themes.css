@@ -65,7 +65,7 @@
   --explorer-hover-bg: #313340;
   --explorer-border: #161a1d;
   --tabs-bg: #1e1e2e;
-  --tab-bg: #313340;
+  --tab-bg: #2b2d42;
   --transparent-bg: rgba(33,34,44, 0.2);
   --tab-active-bg: #282a36;
   --tab-border: #191a21;
@@ -92,7 +92,7 @@
   --explorer-hover-bg: #313340;
   --explorer-border: #161a1d;
   --tabs-bg: #24273a;
-  --tab-bg: #313340;
+  --tab-bg: #3c3f58;
   --transparent-bg: rgba(33,34,44, 0.2);
   --tab-active-bg: #282a36;
   --tab-border: #191a21;
@@ -119,7 +119,7 @@
   --explorer-hover-bg: #313340;
   --explorer-border: #161a1d;
   --tabs-bg: #303446;
-  --tab-bg: #313340;
+  --tab-bg: #4b526a;
   --transparent-bg: rgba(33,34,44, 0.2);
   --tab-active-bg: #282a36;
   --tab-border: #191a21;
@@ -146,7 +146,7 @@
   --explorer-hover-bg: #313340;
   --explorer-border: #161a1d;
   --tabs-bg: #eff1f5;
-  --tab-bg: #313340;
+  --tab-bg: #e0e5ec;
   --transparent-bg: rgba(33,34,44, 0.2);
   --tab-active-bg: #282a36;
   --tab-border: #191a21;
