@@ -42,13 +42,6 @@ const SettingsPage = () => {
           description="Catppuccin is a community-driven pastel theme that aims to be the middle ground between low and high contrast themes."
         />
         <ThemeInfo
-          name="Catppuccin Latte"
-          icon="/catppuccin.png"
-          publisher="Catppuccin"
-          theme="catppuccin-latte"
-          description="Catppuccin is a community-driven pastel theme that aims to be the middle ground between low and high contrast themes."
-        />
-        <ThemeInfo
           name="Nord"
           icon="/nord.png"
           publisher="arcticicestudio"

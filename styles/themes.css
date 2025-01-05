@@ -67,7 +67,7 @@
   --tabs-bg: #1e1e2e;
   --tab-bg: #2b2d42;
   --transparent-bg: rgba(33,34,44, 0.2);
-  --tab-active-bg: #282a36;
+  --tab-active-bg: #3b3f58;
   --tab-border: #191a21;
   --bottombar-bg: #191a21;
   --bottombar-border: #191a21;
@@ -94,7 +94,7 @@
   --tabs-bg: #24273a;
   --tab-bg: #3c3f58;
   --transparent-bg: rgba(33,34,44, 0.2);
-  --tab-active-bg: #282a36;
+  --tab-active-bg: #4c4f69;
   --tab-border: #191a21;
   --bottombar-bg: #191a21;
   --bottombar-border: #191a21;
@@ -121,7 +121,7 @@
   --tabs-bg: #303446;
   --tab-bg: #4b526a;
   --transparent-bg: rgba(33,34,44, 0.2);
-  --tab-active-bg: #282a36;
+  --tab-active-bg: #5a5f7d;
   --tab-border: #191a21;
   --bottombar-bg: #191a21;
   --bottombar-border: #191a21;
@@ -131,33 +131,6 @@
   --scrollbar-track-bg: #303446;
   --scrollbar-thumb-bg: #313340;
   --article-bg: #303446;
-}
-
-/* Catppuccin Latte */
-[data-theme='catppuccin-latte'] {
-  --main-bg: #eff1f5;
-  --bg-text: #313340;
-  --text-color: #4c4f69;
-  --accent-color: #dc8a78;
-  --titlebar-bg: #eff1f5;
-  --sidebar-bg: #eff1f5;
-  --sidebar-hover-bg: #313340;
-  --explorer-bg: #eff1f5;
-  --explorer-hover-bg: #313340;
-  --explorer-border: #161a1d;
-  --tabs-bg: #eff1f5;
-  --tab-bg: #e0e5ec;
-  --transparent-bg: rgba(33,34,44, 0.2);
-  --tab-active-bg: #282a36;
-  --tab-border: #191a21;
-  --bottombar-bg: #191a21;
-  --bottombar-border: #191a21;
-  --button-bg: #44475a;
-  --button-text: #f8f8f2;
-  --bottombar-hover-bg: #4f4f52;
-  --scrollbar-track-bg: #eff1f5;
-  --scrollbar-thumb-bg: #313340;
-  --article-bg: #eff1f5;
 }
 
 /* Nord */
