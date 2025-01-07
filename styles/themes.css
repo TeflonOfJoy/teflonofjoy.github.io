@@ -55,28 +55,28 @@
 /* Catppuccin Mocha */
 [data-theme='catppuccin-mocha'] {
   --main-bg: #1e1e2e;
-  --bg-text: #313340;
+  --bg-text: #313244;
   --text-color: #cdd6f4;
   --accent-color: #f5c2e7;
   --titlebar-bg: #1e1e2e;
   --sidebar-bg: #1e1e2e;
-  --sidebar-hover-bg: #313340;
+  --sidebar-hover-bg: #313244;
   --explorer-bg: #1e1e2e;
-  --explorer-hover-bg: #313340;
-  --explorer-border: #161a1d;
+  --explorer-hover-bg: #313244;
+  --explorer-border: #181825;
   --tabs-bg: #1e1e2e;
-  --tab-bg: #2b2d42;
-  --transparent-bg: rgba(33,34,44, 0.2);
-  --tab-active-bg: #3b3f58;
-  --tab-border: #191a21;
-  --bottombar-bg: #191a21;
-  --bottombar-border: #191a21;
-  --button-bg: #44475a;
-  --button-text: #f8f8f2;
-  --bottombar-hover-bg: #4f4f52;
+  --tab-bg: #313244;
+  --transparent-bg: rgba(49, 50, 68, 0.2);
+  --tab-active-bg: #45475a;
+  --tab-border: #181825;
+  --bottombar-bg: #181825;
+  --bottombar-border: #181825;
+  --button-bg: #45475a;
+  --button-text: #cdd6f4;
+  --bottombar-hover-bg: #585b70;
   --scrollbar-track-bg: #1e1e2e;
-  --scrollbar-thumb-bg: #313340;
-  --article-bg: #1a1b2d;
+  --scrollbar-thumb-bg: #313244;
+  --article-bg: #181825;
 }
 
 /* Nord */
