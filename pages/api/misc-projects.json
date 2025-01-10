@@ -2,7 +2,7 @@
     {
       "id": 1,
       "name": "Re:Furbed",
-      "image": "/refurbed.jpg",
+      "image": "/refurbed.png",
       "description": "Collaborative blog with my good friend 0universe0, hosted on Netlify and seamlessly deployed through my custom domain.",
       "tags": ["Blog", "Web"],
       "source_code": "https://github.com/teflonofjoy/blog.teflonofjoy.com"
