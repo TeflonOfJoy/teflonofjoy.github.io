@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Arcane Vynil Bot",
-    "image": "/projects/jinx.jpg",
+    "image": "/jinx.jpg",
     "description": "A bot that checks the Arcane shop and sees if a Vynil is available for purchase.",
     "tags": ["Python", "Telegram", "Scraper"],
     "source_code": "https://github.com/teflonofjoy/ArcaneVynilBot"

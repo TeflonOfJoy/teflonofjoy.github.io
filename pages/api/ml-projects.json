@@ -2,7 +2,7 @@
     {
       "id": 1,
       "name": "Easy Terms",
-      "image": "/jinx.jpg",
+      "image": "",
       "description": "Easy Terms is a project that aims to simplify the process of reading and understanding terms of service for websites. The project leverages large language models to analyze website content and automatically generate clear, understandable terms of service documents tailored to each site's specific needs.",
       "tags": ["Machine Learning", "LLM"],
       "source_code": "https://github.com/Easy-Terms"
