@@ -1,0 +1,51 @@
+name: Auto Merge PRs and Delete Branches
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs everyday at 00:00 UTC
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Enable Auto-Merge for All Open PRs
+        run: |
+          prs=$(gh pr list --state open --json number -q '.[].number')
+          
+          for pr in $prs; do
+            echo "Enabling auto-merge for PR #$pr"
+            gh pr merge $pr --auto --merge
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete Merged Branches (Optimized)
+        run: |
+          # Fetch fresh PR data before deletion
+          sleep 10  # Short delay to allow GitHub to update its data
+
+          # Get merged PR branches
+          merged_branches=$(gh pr list --base main --state merged --json headRefName -q '.[].headRefName')
+
+          # Get all existing branches in one API request
+          existing_branches=$(gh api repos/${{ github.repository }}/git/refs --jq '.[].ref' | sed 's|refs/heads/||')
+
+          # Loop through merged PR branches, delete only if still in existing branches
+          for branch in $merged_branches; do
+            if echo "$existing_branches" | grep -q "^$branch$"; then
+              echo "Deleting branch: $branch"
+              gh api -X DELETE repos/${{ github.repository }}/git/refs/heads/$branch
+            else
+              echo "Branch $branch already deleted, skipping."
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
