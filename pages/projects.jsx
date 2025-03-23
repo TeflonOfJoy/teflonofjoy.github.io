@@ -9,14 +9,6 @@ const ProjectsPage = ({ ml_projects, bots_projects, misc_projects }) => {
     <>
       <h3>Open Source Projects</h3>
       <br/>
-      <center><h4>Machine Learning</h4></center>
-      <hr/>
-      <div className={styles.container}>
-        {ml_projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
-      <br/>
       <center><h4>Bots</h4></center>
       <hr/>
       <div className={styles.container}>
