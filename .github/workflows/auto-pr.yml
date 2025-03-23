@@ -1,0 +1,68 @@
+name: Auto Create PR on Branch Creation
+
+on:
+  # Manual trigger option
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Branch to create PR from'
+        required: true
+        default: ''
+  
+  # Trigger on branch creation - without problematic filter
+  create:
+    # The "branches: '**'" syntax was removed as it was causing issues
+    # The workflow will filter branches in the job conditions instead
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    # Skip if not triggered by branch creation or manual dispatch
+    # For 'create' events, verify it's a branch (not a tag) and not main/master
+    if: (github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref != 'main' && github.event.ref != 'master') || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history so we can get the base branch
+      
+      - name: Set up Git user
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+      
+      - name: Determine branch name
+        id: branch-info
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "branch=${{ github.event.inputs.branch_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "branch=${{ github.event.ref }}" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Determine base branch
+        id: base-branch
+        run: |
+          # Default to 'main' but check if it exists, otherwise use 'master'
+          if git show-ref --verify --quiet refs/remotes/origin/main; then
+            echo "base=main" >> $GITHUB_OUTPUT
+          else
+            echo "base=master" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Auto PR for branch ${{ steps.branch-info.outputs.branch }}"
+          title: "[Auto PR] Branch: ${{ steps.branch-info.outputs.branch }}"
+          body: |
+            ## Automatic Pull Request
+            
+            This PR was automatically created for branch `${{ steps.branch-info.outputs.branch }}`.
+            
+            Please review the changes and merge if appropriate.
+          base: ${{ steps.base-branch.outputs.base }}
+          branch: ${{ steps.branch-info.outputs.branch }}
+          draft: true  # Mark as draft by default
