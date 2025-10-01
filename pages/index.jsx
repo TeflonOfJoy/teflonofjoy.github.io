@@ -57,7 +57,7 @@ export default function HomePage() {
             <Link href="/resume">
               <button className={styles.button}>Resume</button>
             </Link>
-            <Link href="https://blog.teflonofjoy.com/">
+            <Link href="https://blog.teflonofjoy.dev/">
               <button className={styles.button}>My Blog</button>
             </Link>
             <Link href="/contact">
