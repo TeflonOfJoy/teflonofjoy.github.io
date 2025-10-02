@@ -6,7 +6,7 @@ const myResume = './Resume.pdf';
 const ResumePage = () => {
   return (
     <center>
-      <h3>Resume (<a href={myResume} className={styles.underline} download="Resume-KonstantinosGeorgiou.pdf">Download</a>)</h3>
+      <h3>Resume (<a href={myResume} className={styles.underline} download="Resume-NibiziEmanuel.pdf">Download</a>)</h3>
       <br />
       <div className={styles.pdfContainer}>
         <Document file={myResume}>
