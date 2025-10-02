@@ -23,7 +23,7 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: RenderCV from first YAML in target
+      - name: RenderCV with outputs to src and PDF to public
         run: |
           cd target
           cv_file=$(find . -maxdepth 1 -type f -name "*.yaml" | head -n 1)
@@ -32,14 +32,16 @@ jobs:
             exit 1
           fi
           cd ..
-          mkdir -p ./public
-          rendercv render target/$cv_file --pdf-path ./public/Resume.pdf --typst-path ./public/${cv_file%.yaml}.typ
+          mkdir -p public
+          rendercv render target/$cv_file --output-folder-name src --pdf-path ./public/Resume.pdf
 
-      - name: Upload rendercv_output as an artifact
+      - name: Upload artifact with all outputs
         uses: actions/upload-artifact@v4
         with:
           name: RenderCV Output
-          path: ./public
+          path: |
+            src
+            public/Resume.pdf
 
       - uses: dorny/paths-filter@v3
         id: changes
@@ -48,4 +50,5 @@ jobs:
           filters: |
             cv:
               - 'target/*.yaml'
-              - 'public/*.typ'
+              - 'src/**'
+              - 'public/Resume.pdf'
