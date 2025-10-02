@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/*.yaml'
 
 permissions:
   contents: write
@@ -14,8 +16,7 @@ concurrency:
 
 jobs:
   render-and-push:
-    # Skip if commit made by bot OR if commit message doesn't contain "CV"
-    if: "!contains(github.actor, '[bot]') && contains(github.event.head_commit.message, 'CV')"
+    if: "!contains(github.actor, '[bot]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
