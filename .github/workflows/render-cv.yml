@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   render-and-push:
     if: "!contains(github.actor, '[bot]')"  # Skip if commit made by any bot
