@@ -23,23 +23,23 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: RenderCV from Markdown
+      - name: RenderCV from YAML
         run: |
-          md_file=$(find ./target -maxdepth 1 -type f -name "*.md" | head -n 1)
-          if [ -z "$md_file" ]; then
-            echo "No Markdown file found in ./target"
+          cd target
+          cv_file=$(find . -maxdepth 1 -type f -name "*_CV.yaml" | head -n 1)
+          if [ -z "$cv_file" ]; then
+            echo "No RenderCV YAML file found in ./target"
             exit 1
           fi
-
+          cd ..
           mkdir -p ./public
-          # Run RenderCV rendering, output PDF as Resume.pdf in public folder
-          rendercv render --markdown-path "$md_file" --pdf-path ./public/Resume.pdf
+          rendercv render target/$cv_file --pdf-path ./public/Resume.pdf --typst-path ./public/${cv_file%.yaml}.typ
 
       - name: Upload rendercv_output as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: RenderCV Output
-          path: ./public/Resume.pdf
+          path: ./public
 
       - uses: dorny/paths-filter@v3
         id: changes
@@ -47,5 +47,5 @@ jobs:
           base: HEAD
           filters: |
             cv:
-              - '*.md'
-              - './public/Resume.pdf'
+              - 'target/*_CV.yaml'
+              - 'public/*.typ'
