@@ -23,12 +23,12 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: RenderCV from YAML
+      - name: RenderCV from first YAML in target
         run: |
           cd target
-          cv_file=$(find . -maxdepth 1 -type f -name "*_CV.yaml" | head -n 1)
+          cv_file=$(find . -maxdepth 1 -type f -name "*.yaml" | head -n 1)
           if [ -z "$cv_file" ]; then
-            echo "No RenderCV YAML file found in ./target"
+            echo "No YAML file found in ./target"
             exit 1
           fi
           cd ..
@@ -47,5 +47,5 @@ jobs:
           base: HEAD
           filters: |
             cv:
-              - 'target/*_CV.yaml'
+              - 'target/*.yaml'
               - 'public/*.typ'
