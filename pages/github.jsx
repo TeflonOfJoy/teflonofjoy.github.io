@@ -58,69 +58,45 @@ const GithubPage = ({ repos, user }) => {
 };
 
 export async function getStaticProps() {
-  try {
-    const userRes = await fetch(
-      `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`,
-      {
-        headers: {
-          Authorization: `token ${process.env.GITHUB_API_KEY}`,
-        },
-      }
-    );
-    const user = await userRes.json();
-
-    const repoRes = await fetch(
-      `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}/repos?per_page=100`,
-      {
-        headers: {
-          Authorization: `token ${process.env.GITHUB_API_KEY}`,
-        },
-      }
-    );
-    
-    let repos = await repoRes.json();
-
-    // Check if the API returned an error (like rate limit exceeded)
-    if (!Array.isArray(repos)) {
-      console.error('GitHub API error:', repos);
-      repos = [];
-    }
-
-    repos = repos
-      .sort((a, b) => {
-        // Fixed: return numbers instead of objects
-        if (a.html_url.includes('EESTech') || a.html_url.includes('COSC') || a.html_url.includes('/teflonofjoy/teflonofjoy')) {
-          return 1; // Move to end
-        }
-        if (b.html_url.includes('EESTech') || b.html_url.includes('COSC') || b.html_url.includes('/teflonofjoy/teflonofjoy')) {
-          return -1; // Move to end
-        }
-
-        return (b.stargazers_count + b.watchers_count + b.forks_count) - (a.stargazers_count + a.watchers_count + a.forks_count);
-      })
-      .slice(0, 10);
-
-    return {
-      props: { title: 'GitHub', repos, user },
-      revalidate: 30,
-    };
-  } catch (error) {
-    console.error('Error fetching GitHub data:', error);
-    // Return fallback data if API fails
-    return {
-      props: { 
-        title: 'GitHub', 
-        repos: [], 
-        user: { 
-          login: process.env.NEXT_PUBLIC_GITHUB_USERNAME || 'teflonofjoy',
-          avatar_url: '',
-          public_repos: 0,
-          followers: 0
-        } 
+  const timestamp = new Date().getTime();
+  const userRes = await fetch(
+    `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`,
+    {
+      headers: {
+        Authorization: `token ${process.env.GITHUB_API_KEY}`,
       },
-      revalidate: 30,
-    };
-  }
+    }
+  );
+  const user = await userRes.json();
+
+  const repoRes = await fetch(
+    `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}/repos?per_page=100`,
+    {
+      headers: {
+        Authorization: `token ${process.env.GITHUB_API_KEY}`,
+      },
+    }
+  );
+  
+  let repos = await repoRes.json();
+
+  repos = repos
+    .sort((a, b) => {
+      if (a.html_url.includes('EESTech') || a.html_url.includes('COSC') || a.html_url.includes('/teflonofjoy/teflonofjoy')) {
+        return b
+      }
+      if (b.html_url.includes('EESTech') || b.html_url.includes('COSC') || b.html_url.includes('/teflonofjoy/teflonofjoy')) {
+        return a
+      }
+
+      return (b.stargazers_count + b.watchers_count + b.forks_count) - (a.stargazers_count + a.watchers_count + a.forks_count)
+    })
+    .slice(0, 10);
+
+  return {
+    props: { title: 'GitHub', repos, user },
+    revalidate: 30,
+  };
 }
 
 export default GithubPage;
