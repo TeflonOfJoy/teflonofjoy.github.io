@@ -14,7 +14,8 @@ concurrency:
 
 jobs:
   render-and-push:
-    if: "!contains(github.actor, '[bot]')"  # Skip if commit made by any bot
+    # Skip if commit made by bot OR if commit message doesn't contain "CV"
+    if: "!contains(github.actor, '[bot]') && contains(github.event.head_commit.message, 'CV')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
