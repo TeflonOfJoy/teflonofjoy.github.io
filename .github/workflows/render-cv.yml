@@ -1,53 +1,46 @@
-name: Render a CV
+name: Render and Push CV
 
 on:
   push:
     branches:
       - main
-  workflow_call: # to make the workflow triggerable from other workflows (release.yaml)
 
 permissions:
   contents: write
 
 jobs:
-  rendercv:
-    name: RenderCV
+  render-and-push:
+    if: "!contains(github.actor, '[bot]')"  # Skip if commit made by any bot
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install RenderCV
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
+
       - name: RenderCV
         run: |
           cd src
           cv_file=$(find . -maxdepth 1 -type f -name "*.yaml" | head -n 1)
           if [ -z "$cv_file" ]; then
-            echo "No RenderCV file found!"
+            echo "No YAML file found in ./src"
             exit 1
           fi
           cd ..
-          rendercv render src/$cv_file --pdf-path ${cv_file%.yaml}.pdf --typst-path ${cv_file%.yaml}.typ
-      - name: Upload rendercv_output as an artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: RenderCV Output
-          path: rendercv_output
-      - uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          base: HEAD
-          filters: |
-            cv:
-              - '*.typ'
-      - name: Push the changes
-        if: steps.changes.outputs.cv == 'true'
+          rendercv render src/$cv_file --output-folder-name src --pdf-path public/Resume.pdf
+
+      - name: Commit generated files
         run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git add -A
-          git commit -m "render the latest CV"
-          git push
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src public/Resume.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto update generated CV files [skip ci]"
+            git push origin HEAD
+          else
+            echo "No changes to commit"
+          fi
