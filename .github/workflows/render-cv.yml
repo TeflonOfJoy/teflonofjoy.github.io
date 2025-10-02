@@ -1,0 +1,51 @@
+name: Render a CV
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  rendercv:
+    name: RenderCV
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install RenderCV
+        run: |
+          pip install -r requirements.txt
+
+      - name: RenderCV from Markdown
+        run: |
+          md_file=$(find ./target -maxdepth 1 -type f -name "*.md" | head -n 1)
+          if [ -z "$md_file" ]; then
+            echo "No Markdown file found in ./target"
+            exit 1
+          fi
+
+          mkdir -p ./public
+          # Run RenderCV rendering, output PDF as Resume.pdf in public folder
+          rendercv render --markdown-path "$md_file" --pdf-path ./public/Resume.pdf
+
+      - name: Upload rendercv_output as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RenderCV Output
+          path: ./public/Resume.pdf
+
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          base: HEAD
+          filters: |
+            cv:
+              - '*.md'
+              - './public/Resume.pdf'
