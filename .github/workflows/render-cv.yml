@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_call: # to make the workflow triggerable from other workflows (release.yaml)
 
 permissions:
   contents: write
@@ -14,41 +15,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install RenderCV
         run: |
           pip install -r requirements.txt
-
-      - name: RenderCV with outputs to src and PDF to public
+      - name: RenderCV
         run: |
-          cd target
-          cv_file=$(find . -maxdepth 1 -type f -name "*.yaml" | head -n 1)
+          cd src
+          cv_file=$(find .  -maxdepth 1 -type f -name "*.yaml" | head -n 1)
           if [ -z "$cv_file" ]; then
-            echo "No YAML file found in ./target"
+            echo "No RenderCV file found!"
             exit 1
           fi
           cd ..
-          mkdir -p public
-          rendercv render target/$cv_file --output-folder-name src --pdf-path ./public/Resume.pdf
-
-      - name: Upload artifact with all outputs
+          rendercv render src/$cv_file --pdf-path ${cv_file%.yaml}.pdf --typst-path ${cv_file%.yaml}.typ
+      - name: Upload rendercv_output as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: RenderCV Output
-          path: |
-            src
-            public/Resume.pdf
-
+          path: rendercv_output
       - uses: dorny/paths-filter@v3
         id: changes
         with:
           base: HEAD
           filters: |
             cv:
-              - 'target/*.yaml'
-              - 'src/**'
-              - 'public/Resume.pdf'
+              - '*.typ'
+      - name: Push the changes
+        if: steps.changes.outputs.cv == 'true'
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git add -A
+          git commit -m "render the latest CV"
+          git push
