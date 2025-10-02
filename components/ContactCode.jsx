@@ -3,8 +3,8 @@ import styles from '../styles/ContactCode.module.css';
 const contactItems = [
   {
     social: 'Email',
-    link: 'emanuel.nibizi@teflonofjoy.com',
-    href: 'mailto:emanuel.nibizi@teflonofjoy.com',
+    link: 'en@teflonofjoy.dev',
+    href: 'mailto:en@teflonofjoy.dev',
   },
   {
     social: 'Matrix',
@@ -18,8 +18,8 @@ const contactItems = [
   },
   {
     social: 'Website',
-    link: 'teflonofjoy.com',
-    href: 'https://teflonofjoy.com',
+    link: 'teflonofjoy.dev',
+    href: 'https://teflonofjoy.dev',
   },
 ];
 
