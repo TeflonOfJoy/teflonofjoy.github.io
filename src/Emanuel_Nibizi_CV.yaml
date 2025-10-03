@@ -1,7 +1,7 @@
 cv:
   name: Emanuel Nibizi
   email: en@teflonofjoy.dev
-  phone: +1-609-999-9995
+  phone: +39-351-586-3236
   website:
   social_networks:
     - network: LinkedIn
@@ -9,9 +9,6 @@ cv:
     - network: GitHub
       username: teflonofjoy
   sections:
-    welcome_to_RenderCV!:
-      - '[RenderCV](https://rendercv.com) is a Typst-based CV framework designed for academics and engineers, with Markdown syntax support.'
-      - Each section title is arbitrary. Each section contains a list of entries, and there are 7 different entry types to choose from.
     education:
       - institution: Stanford University
         area: Computer Science
@@ -73,14 +70,6 @@ cv:
         highlights:
           - Launched an [iOS app](https://example.com) in 09/2024 that currently has 10k+ monthly active users
           - The app is made open-source (3,000+ stars [on GitHub](https://github.com))
-      - name: '[Teaching on Udemy](https://example.com)'
-        date: Fall 2023
-        start_date:
-        end_date:
-        location:
-        summary:
-        highlights:
-          - Instructed the "Statistics" course on Udemy (60,000+ students, 200,000+ hours watched)
     skills:
       - label: Programming
         details: Proficient with Python, C++, and Git; good understanding of Web, app development, and DevOps
@@ -88,16 +77,6 @@ cv:
         details: Good understanding of differential equations, calculus, and linear algebra
       - label: Languages
         details: 'English (fluent, TOEFL: 118/120), Turkish (native)'
-    publications:
-      - title: 3D Finite Element Analysis of No-Insulation Coils
-        authors:
-          - Frodo Baggins
-          - '***John Doe***'
-          - Samwise Gamgee
-        doi: 10.1109/TASC.2023.3340648
-        url:
-        journal:
-        date: 2004-01
     extracurricular_activities:
       - bullet: 'There are 7 unique entry types in RenderCV: *BulletEntry*, *TextEntry*, *EducationEntry*, *ExperienceEntry*, *NormalEntry*, *PublicationEntry*, and *OneLineEntry*.'
       - bullet: Each entry type has a different structure and layout. This document demonstrates all of them.
