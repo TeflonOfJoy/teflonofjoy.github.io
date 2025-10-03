@@ -1,16 +1,10 @@
 # Emanuel Nibizi's CV
 
-- Phone: +1 609 999 9995
+- Phone: +39 351 586 3236
 - Email: [en@teflonofjoy.dev](mailto:en@teflonofjoy.dev)
 - LinkedIn: [emanuel.nibizi](https://linkedin.com/in/emanuel.nibizi)
 - GitHub: [teflonofjoy](https://github.com/teflonofjoy)
 
-
-# Welcome to RenderCV!
-
-[RenderCV](https://rendercv.com) is a Typst-based CV framework designed for academics and engineers, with Markdown syntax support.
-
-Each section title is arbitrary. Each section contains a list of entries, and there are 7 different entry types to choose from.
 
 # Education
 
@@ -56,22 +50,11 @@ Each section title is arbitrary. Each section contains a list of entries, and th
 - Launched an [iOS app](https://example.com) in 09/2024 that currently has 10k+ monthly active users
 - The app is made open-source (3,000+ stars [on GitHub](https://github.com))
 
-## [Teaching on Udemy](https://example.com)
-
-- Fall 2023
-- Instructed the "Statistics" course on Udemy (60,000+ students, 200,000+ hours watched)
-
 # Skills
 
 - Programming: Proficient with Python, C++, and Git; good understanding of Web, app development, and DevOps
 - Mathematics: Good understanding of differential equations, calculus, and linear algebra
 - Languages: English (fluent, TOEFL: 118/120), Turkish (native)
-# Publications
-
-## 3D Finite Element Analysis of No-Insulation Coils ([10.1109/TASC.2023.3340648](https://doi.org/10.1109/TASC.2023.3340648))
-- Jan 2004
-- Frodo Baggins, ***John Doe***, Samwise Gamgee
-
 # Extracurricular Activities
 
 - There are 7 unique entry types in RenderCV: *BulletEntry*, *TextEntry*, *EducationEntry*, *ExperienceEntry*, *NormalEntry*, *PublicationEntry*, and *OneLineEntry*.

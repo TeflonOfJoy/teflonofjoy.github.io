@@ -466,24 +466,12 @@
 // Print connections:
 #let connections-list = (
   [#box(original-link("mailto:en@teflonofjoy.dev")[#fa-icon("envelope", size: 0.9em) #h(0.05cm)en\@teflonofjoy.dev])],
-  [#box(original-link("tel:+1-609-999-9995")[#fa-icon("phone", size: 0.9em) #h(0.05cm)\(609\) 999-9995])],
+  [#box(original-link("tel:+39-351-586-3236")[#fa-icon("phone", size: 0.9em) #h(0.05cm)351 586 3236])],
   [#box(original-link("https://linkedin.com/in/emanuel.nibizi")[#fa-icon("linkedin", size: 0.9em) #h(0.05cm)emanuel.nibizi])],
   [#box(original-link("https://github.com/teflonofjoy")[#fa-icon("github", size: 0.9em) #h(0.05cm)teflonofjoy])],
 )
 #connections(connections-list)
 
-
-
-== Welcome to RenderCV!
-
-
-#one-col-entry(
-  content: [#link("https://rendercv.com")[RenderCV] is a Typst-based CV framework designed for academics and engineers, with Markdown syntax support.]
-)
-#v(design-entries-vertical-space-between-entries)
-#one-col-entry(
-  content: [Each section title is arbitrary. Each section contains a list of entries, and there are 7 different entry types to choose from.]
-)
 
 
 == Education
@@ -620,21 +608,6 @@
   ],
 )
 
-#v(design-entries-vertical-space-between-entries)
-#two-col-entry(
-  left-content: [
-    #link("https://example.com")[#strong[Teaching on Udemy]]
-  ],
-  right-content: [
-    #emph[Fall 2023]
-  ],
-)
-#one-col-entry(
-  content: [
-    #v(design-highlights-top-margin);#highlights([Instructed the \"Statistics\" course on Udemy \(60,000+ students, 200,000+ hours watched\)],)
-  ],
-)
-
 
 
 == Skills
@@ -651,25 +624,6 @@
 #one-col-entry(
   content: [#strong[Languages:] English \(fluent, TOEFL: 118\/120\), Turkish \(native\)]
 )
-
-
-== Publications
-
-
-#two-col-entry(
-  left-content: [
-    #strong[3D Finite Element Analysis of No-Insulation Coils]
-
-  ],
-  right-content: [
-    Jan 2004
-  ],
-)
-#one-col-entry(content:[
-#v(design-highlights-top-margin);Frodo Baggins, #strong[#emph[John Doe]], Samwise Gamgee
-
-#v(design-highlights-top-margin - design-text-leading)#link("https://doi.org/10.1109/TASC.2023.3340648")[10.1109/TASC.2023.3340648]])
-
 
 
 == Extracurricular Activities
