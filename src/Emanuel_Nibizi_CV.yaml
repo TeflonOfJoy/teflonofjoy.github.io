@@ -5,9 +5,9 @@ cv:
   website:
   social_networks:
     - network: LinkedIn
-      username: john.doe
+      username: emanuel.nibizi
     - network: GitHub
-      username: john.doe
+      username: teflonofjoy
   sections:
     welcome_to_RenderCV!:
       - '[RenderCV](https://rendercv.com) is a Typst-based CV framework designed for academics and engineers, with Markdown syntax support.'
