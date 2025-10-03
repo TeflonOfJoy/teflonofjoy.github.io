@@ -2,8 +2,8 @@
 
 - Phone: +1 609 999 9995
 - Email: [en@teflonofjoy.dev](mailto:en@teflonofjoy.dev)
-- LinkedIn: [john.doe](https://linkedin.com/in/john.doe)
-- GitHub: [john.doe](https://github.com/john.doe)
+- LinkedIn: [emanuel.nibizi](https://linkedin.com/in/emanuel.nibizi)
+- GitHub: [teflonofjoy](https://github.com/teflonofjoy)
 
 
 # Welcome to RenderCV!
