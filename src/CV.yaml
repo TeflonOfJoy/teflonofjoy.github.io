@@ -159,7 +159,6 @@ design:
     show_time_spans_in: []
   highlights:
     bullet: ◦
-    nested_bullet: '-'
     top_margin: 0.25cm
     left_margin: 0.4cm
     vertical_space_between_highlights: 0.25cm
