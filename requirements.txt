@@ -1,1 +1,1 @@
-rendercv[full]==2.2
+rendercv[full] @ git+https://github.com/rendercv/rendercv@main
