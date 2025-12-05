@@ -10,84 +10,52 @@ cv:
       username: teflonofjoy
   sections:
     education:
-      - institution: Stanford University
+      - institution: University of Turin
         area: Computer Science
-        degree: PhD
-        date:
-        start_date: 2023-09
-        end_date: present
-        location: Stanford, CA, USA
-        summary:
-        highlights:
-          - Working on the optimization of autonomous vehicles in urban environments
-      - institution: Boğaziçi University
-        area: Computer Engineering
         degree: BS
         date:
-        start_date: 2018-09
-        end_date: 2022-06
-        location: Istanbul, Türkiye
+        start_date: 2022-09
+        end_date: present
+        location: Torino, Italia
         summary:
         highlights:
-          - 'GPA: 3.9/4.0, ranked 1st out of 100 students'
-          - 'Awards: Best Senior Project, High Honor'
+          - Thesis work on deep reinforcement learning autonomous driving simulation in Godot
+          - Granted resources from the high performance computing center HPC4AI for the scope of the Thesis
     experience:
-      - company: Company C
-        position: Summer Intern
+      - company: Sistemi
+        position: Software Engineer
         date:
-        start_date: 2024-06
-        end_date: 2024-09
-        location: Livingston, LA, USA
+        start_date: 2021-06
+        end_date: 2023-12
+        location: Torino, Italia
         summary:
         highlights:
-          - Developed deep learning models for the detection of gravitational waves in LIGO data
-          - Published [3 peer-reviewed research papers](https://example.com) about the project and results
-      - company: Company B
-        position: Summer Intern
+          - Developed and shipped multiple SPA and web applications focusing on making the most of the proprietary project management software
+      - company: Sistemi
+        position: IT Consultant
         date:
-        start_date: 2023-06
-        end_date: 2023-09
-        location: Ankara, Türkiye
+        start_date: 2024-02
+        end_date: 2025-01
+        location: Torino, Italia
         summary:
         highlights:
-          - Optimized the production line by 15% by implementing a new scheduling algorithm
-      - company: Company A
-        position: Summer Intern
-        date:
-        start_date: 2022-06
-        end_date: 2022-09
-        location: Istanbul, Türkiye
-        summary:
-        highlights:
-          - Designed an inventory management web application for a warehouse
+          - Created and maintained a system for data collection and analysis of data using Apache Kafka
     projects:
-      - name: '[Example Project](https://example.com)'
+      - name: '[Blog](https://blog.teflonofjoy.com/)'
         date:
-        start_date: 2024-05
+        start_date: 2022-11
         end_date: present
         location:
-        summary: A web application for writing essays
+        summary: Collaborative blog with my good friend 0universe0, hosted on Netlify and seamlessly deployed through my custom domain
         highlights:
-          - Launched an [iOS app](https://example.com) in 09/2024 that currently has 10k+ monthly active users
-          - The app is made open-source (3,000+ stars [on GitHub](https://github.com))
+          - Built with HUGO and shipped with Netlify
     skills:
       - label: Programming
-        details: Proficient with Python, C++, and Git; good understanding of Web, app development, and DevOps
+        details: Proficient with Python, C, Java, Dafny, Kotlin and Git, ; good understanding of Web, app development, and DevOps
       - label: Mathematics
-        details: Good understanding of differential equations, calculus, and linear algebra
+        details: Good understanding of differential equations, calculus, linear algebra, mathematical logic, formal systems and software verification through formal methods
       - label: Languages
-        details: 'English (fluent, TOEFL: 118/120), Turkish (native)'
-    extracurricular_activities:
-      - bullet: 'There are 7 unique entry types in RenderCV: *BulletEntry*, *TextEntry*, *EducationEntry*, *ExperienceEntry*, *NormalEntry*, *PublicationEntry*, and *OneLineEntry*.'
-      - bullet: Each entry type has a different structure and layout. This document demonstrates all of them.
-    numbered_entries:
-      - number: This is a numbered entry.
-      - number: This is another numbered entry.
-      - number: This is the third numbered entry.
-    reversed_numbered_entries:
-      - reversed_number: This is a reversed numbered entry.
-      - reversed_number: This is another reversed numbered entry.
-      - reversed_number: This is the third reversed numbered entry.
+        details: 'English (fluent, Cambridge English: C2 Proficiency), French (native), Italian (native)'
 design:
   theme: sb2nov
   page:
