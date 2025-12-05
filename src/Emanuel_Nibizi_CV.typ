@@ -480,45 +480,20 @@
 // YES DATE, NO DEGREE
 #two-col-entry(
   left-content: [
-    #strong[Stanford University]
+    #strong[University of Turin]
 
-#emph[PhD in Computer Science]
+#emph[BS in Computer Science]
   ],
   right-content: [
-    #emph[Stanford, CA, USA]
+    #emph[Torino, Italia]
 
-#emph[Sept 2023 – present]
+#emph[Sept 2022 – present]
   ],
 )
 #block(
   [
     #set par(spacing: 0pt)
-    #v(design-highlights-top-margin);#highlights([Working on the optimization of autonomous vehicles in urban environments],)
-  ],
-  inset: (
-    left: design-entries-left-and-right-margin,
-    right: design-entries-left-and-right-margin,
-  ),
-)
-
-#v(design-entries-vertical-space-between-entries)
-// YES DATE, NO DEGREE
-#two-col-entry(
-  left-content: [
-    #strong[Boğaziçi University]
-
-#emph[BS in Computer Engineering]
-  ],
-  right-content: [
-    #emph[Istanbul, Türkiye]
-
-#emph[Sept 2018 – June 2022]
-  ],
-)
-#block(
-  [
-    #set par(spacing: 0pt)
-    #v(design-highlights-top-margin);#highlights([GPA: 3.9\/4.0, ranked 1st out of 100 students],[Awards: Best Senior Project, High Honor],)
+    #v(design-highlights-top-margin);#highlights([Thesis work on deep reinforcement learning autonomous driving simulation in Godot],[Granted resources from the high performance computing center HPC4AI for the scope of the Thesis],)
   ],
   inset: (
     left: design-entries-left-and-right-margin,
@@ -533,57 +508,38 @@
 
 #two-col-entry(
   left-content: [
-    #strong[Summer Intern]
+    #strong[Software Engineer]
 
-#emph[Company C]
+#emph[Sistemi]
   ],
   right-content: [
-    #emph[Livingston, LA, USA]
+    #emph[Torino, Italia]
 
-#emph[June 2024 – Sept 2024]
+#emph[June 2021 – Dec 2023]
   ],
 )
 #one-col-entry(
   content: [
-    #v(design-highlights-top-margin);#highlights([Developed deep learning models for the detection of gravitational waves in LIGO data],[Published #link("https://example.com")[3 peer-reviewed research papers] about the project and results],)
+    #v(design-highlights-top-margin);#highlights([Developed and shipped multiple SPA and web applications focusing on making the most of the proprietary project management software],)
   ],
 )
 
 #v(design-entries-vertical-space-between-entries)
 #two-col-entry(
   left-content: [
-    #strong[Summer Intern]
+    #strong[IT Consultant]
 
-#emph[Company B]
+#emph[Sistemi]
   ],
   right-content: [
-    #emph[Ankara, Türkiye]
+    #emph[Torino, Italia]
 
-#emph[June 2023 – Sept 2023]
+#emph[Feb 2024 – Jan 2025]
   ],
 )
 #one-col-entry(
   content: [
-    #v(design-highlights-top-margin);#highlights([Optimized the production line by 15\% by implementing a new scheduling algorithm],)
-  ],
-)
-
-#v(design-entries-vertical-space-between-entries)
-#two-col-entry(
-  left-content: [
-    #strong[Summer Intern]
-
-#emph[Company A]
-  ],
-  right-content: [
-    #emph[Istanbul, Türkiye]
-
-#emph[June 2022 – Sept 2022]
-  ],
-)
-#one-col-entry(
-  content: [
-    #v(design-highlights-top-margin);#highlights([Designed an inventory management web application for a warehouse],)
+    #v(design-highlights-top-margin);#highlights([Created and maintained a system for data collection and analysis of data using Apache Kafka],)
   ],
 )
 
@@ -594,17 +550,17 @@
 
 #two-col-entry(
   left-content: [
-    #link("https://example.com")[#strong[Example Project]]
+    #link("https://blog.teflonofjoy.com/")[#strong[Blog]]
   ],
   right-content: [
-    #emph[May 2024 – present]
+    #emph[Nov 2022 – present]
   ],
 )
 #one-col-entry(
   content: [
-    #two-col(left-column-width: design-highlights-summary-left-margin, right-column-width: 1fr, left-content: [], right-content: [#v(design-highlights-top-margin);#align(left, [A web application for writing essays])], column-gutter: 0cm)
+    #two-col(left-column-width: design-highlights-summary-left-margin, right-column-width: 1fr, left-content: [], right-content: [#v(design-highlights-top-margin);#align(left, [Collaborative blog with my good friend 0universe0, hosted on Netlify and seamlessly deployed through my custom domain])], column-gutter: 0cm)
 
-#v(-design-text-leading)  #v(design-highlights-top-margin);#highlights([Launched an #link("https://example.com")[iOS app] in 09\/2024 that currently has 10k+ monthly active users],[The app is made open-source \(3,000+ stars #link("https://github.com")[on GitHub]\)],)
+#v(-design-text-leading)  #v(design-highlights-top-margin);#highlights([Built with HUGO and shipped with Netlify],)
   ],
 )
 
@@ -614,53 +570,15 @@
 
 
 #one-col-entry(
-  content: [#strong[Programming:] Proficient with Python, C++, and Git; good understanding of Web, app development, and DevOps]
+  content: [#strong[Programming:] Proficient with Python, C, Java, Dafny, Kotlin and Git, ; good understanding of Web, app development, and DevOps]
 )
 #v(design-entries-vertical-space-between-entries)
 #one-col-entry(
-  content: [#strong[Mathematics:] Good understanding of differential equations, calculus, and linear algebra]
+  content: [#strong[Mathematics:] Good understanding of differential equations, calculus, linear algebra, mathematical logic, formal systems and software verification through formal methods]
 )
 #v(design-entries-vertical-space-between-entries)
 #one-col-entry(
-  content: [#strong[Languages:] English \(fluent, TOEFL: 118\/120\), Turkish \(native\)]
+  content: [#strong[Languages:] English \(fluent, Cambridge English: C2 Proficiency\), French \(native\), Italian \(native\)]
 )
 
-
-== Extracurricular Activities
-
-
-#one-col-entry(content: [#bullet-entry[There are 7 unique entry types in RenderCV: #emph[BulletEntry], #emph[TextEntry], #emph[EducationEntry], #emph[ExperienceEntry], #emph[NormalEntry], #emph[PublicationEntry], and #emph[OneLineEntry].]])
-#v(design-entries-vertical-space-between-entries)
-#one-col-entry(content: [#bullet-entry[Each entry type has a different structure and layout. This document demonstrates all of them.]])
-
-
-== Numbered Entries
-#one-col-entry(
-  content: [
-
-
-+ This is a numbered entry.
-+ This is another numbered entry.
-+ This is the third numbered entry.
-
-  ],
-)
-
-== Reversed Numbered Entries
-#one-col-entry(
-  content: [
-    #let rev-enum-items = (
-
-
-[This is a reversed numbered entry.],
-[This is another reversed numbered entry.],
-[This is the third reversed numbered entry.],
-
-  )
-  #enum(
-    numbering: n => [#{rev-enum-items.len() + 1 - n}.],
-    ..rev-enum-items,
-  )
-  ],
-)
 
