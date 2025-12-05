@@ -1,8 +1,8 @@
 # Emanuel Nibizi's CV
 
 - Phone: +39 351 586 3236
-- Email: [en@teflonofjoy.dev](mailto:en@teflonofjoy.dev)
-- LinkedIn: [emanuel.nibizi](https://linkedin.com/in/emanuel.nibizi)
+- Email: [h2sbf7@protonmail.com](mailto:h2sbf7@protonmail.com)
+- Website: [www.teflonofjoy.dev](https://www.teflonofjoy.dev/)
 - GitHub: [teflonofjoy](https://github.com/teflonofjoy)
 
 
@@ -12,8 +12,8 @@
 
 - Sept 2022 – present
 - Torino, Italia
-- Thesis work on deep reinforcement learning autonomous driving simulation in Godot
-- Granted resources from the high performance computing center HPC4AI for the scope of the Thesis
+- Thesis work on deep reinforcement learning for an autonomous driving simulation in Godot
+- Granted access to resources from the high performance computing center HPC4AI for the scope of the Thesis
 
 # Experience
 

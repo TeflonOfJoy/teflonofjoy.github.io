@@ -465,9 +465,9 @@
 
 // Print connections:
 #let connections-list = (
-  [#box(original-link("mailto:en@teflonofjoy.dev")[#fa-icon("envelope", size: 0.9em) #h(0.05cm)en\@teflonofjoy.dev])],
+  [#box(original-link("mailto:h2sbf7@protonmail.com")[#fa-icon("envelope", size: 0.9em) #h(0.05cm)h2sbf7\@protonmail.com])],
   [#box(original-link("tel:+39-351-586-3236")[#fa-icon("phone", size: 0.9em) #h(0.05cm)351 586 3236])],
-  [#box(original-link("https://linkedin.com/in/emanuel.nibizi")[#fa-icon("linkedin", size: 0.9em) #h(0.05cm)emanuel.nibizi])],
+  [#box(original-link("https://www.teflonofjoy.dev/")[#fa-icon("link", size: 0.9em) #h(0.05cm)www.teflonofjoy.dev])],
   [#box(original-link("https://github.com/teflonofjoy")[#fa-icon("github", size: 0.9em) #h(0.05cm)teflonofjoy])],
 )
 #connections(connections-list)
@@ -493,7 +493,7 @@
 #block(
   [
     #set par(spacing: 0pt)
-    #v(design-highlights-top-margin);#highlights([Thesis work on deep reinforcement learning autonomous driving simulation in Godot],[Granted resources from the high performance computing center HPC4AI for the scope of the Thesis],)
+    #v(design-highlights-top-margin);#highlights([Thesis work on deep reinforcement learning for an autonomous driving simulation in Godot],[Granted access to resources from the high performance computing center HPC4AI for the scope of the Thesis],)
   ],
   inset: (
     left: design-entries-left-and-right-margin,
