@@ -1,11 +1,9 @@
 cv:
   name: Emanuel Nibizi
-  email: en@teflonofjoy.dev
+  email: h2sbf7@protonmail.com
   phone: +39-351-586-3236
-  website:
+  website: https://www.teflonofjoy.dev/
   social_networks:
-    - network: LinkedIn
-      username: emanuel.nibizi
     - network: GitHub
       username: teflonofjoy
   sections:
@@ -19,8 +17,8 @@ cv:
         location: Torino, Italia
         summary:
         highlights:
-          - Thesis work on deep reinforcement learning autonomous driving simulation in Godot
-          - Granted resources from the high performance computing center HPC4AI for the scope of the Thesis
+          - Thesis work on deep reinforcement learning for an autonomous driving simulation in Godot
+          - Granted access to resources from the high performance computing center HPC4AI for the scope of the Thesis
     experience:
       - company: Sistemi
         position: Software Engineer
