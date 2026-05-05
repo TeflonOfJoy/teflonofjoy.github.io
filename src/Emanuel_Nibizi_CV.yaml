@@ -56,14 +56,14 @@ cv:
         details: 'English (fluent, Cambridge English: C2 Proficiency), French (native), Italyn (native)'
 design:
   theme: sb2nov
-  
+
 locale:
   language: english
 
 settings:
   current_date: today
   render_command:
-    output_folder: rendercv_output
+    output_folder: src
     design:
     locale:
     typst_path: OUTPUT_FOLDER/NAME_IN_SNAKE_CASE_CV.typ
