@@ -14,7 +14,7 @@ export default function HomePage() {
         <div className={styles.foreground}>
           <div className={styles.content}>
             <h1 className={styles.name}>Emanuel Nibizi</h1>
-            <h6 className={styles.bio}>Computer Science Undergraduate</h6>
+            <h6 className={styles.bio}>Computer Science Lover</h6>
             <div className={styles.cardContainer}>
               <div className={styles.card}>
                 <div className={styles.content}>
@@ -44,8 +44,8 @@ export default function HomePage() {
                     <span key='SQL' className='SQL'>
                       SQL
                     </span>
-                    <span key='Bots' className='Bots'>
-                      Bots
+                    <span key='JAX' className='JAX'>
+                      JAX
                     </span>
                     <span key='APIs' className='APIs'>
                       Docker

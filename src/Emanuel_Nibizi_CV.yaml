@@ -13,8 +13,8 @@ cv:
         degree: BS
         date:
         start_date: 2022-09
-        end_date: present
-        location: Torino, Italia
+        end_date: 2025-03
+        location: Turin, Italy
         summary:
         highlights:
           - Thesis work on deep reinforcement learning for an autonomous driving simulation in Godot
@@ -25,7 +25,7 @@ cv:
         date:
         start_date: 2021-06
         end_date: 2023-12
-        location: Torino, Italia
+        location: Turin, Italy
         summary:
         highlights:
           - Developed and shipped multiple SPA and web applications focusing on making the most of the proprietary project management software
@@ -34,7 +34,7 @@ cv:
         date:
         start_date: 2024-02
         end_date: 2025-01
-        location: Torino, Italia
+        location: Turin, Italy
         summary:
         highlights:
           - Created and maintained a system for data collection and analysis of data using Apache Kafka
@@ -53,7 +53,7 @@ cv:
       - label: Mathematics
         details: Good understanding of differential equations, calculus, linear algebra, mathematical logic, formal systems and software verification through formal methods
       - label: Languages
-        details: 'English (fluent, Cambridge English: C2 Proficiency), French (native), Italian (native)'
+        details: 'English (fluent, Cambridge English: C2 Proficiency), French (native), Italyn (native)'
 design:
   theme: sb2nov
   page:
