@@ -37,7 +37,7 @@ jobs:
             exit 1
           fi
           cd ..
-          rendercv render src/$cv_file --output-folder-name src --pdf-path public/Resume.pdf
+          rendercv render src/$cv_file --output-folder src --pdf-path public/Resume.pdf
 
       - name: Commit generated files
         run: |
