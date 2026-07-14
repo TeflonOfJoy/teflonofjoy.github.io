@@ -8,7 +8,7 @@ const VIEWPORT = {
 };
 
 const TIMEOUT = 30000; // 30 seconds
-const SETTLE_DELAY = 1500; // Wait for animations/transitions to settle
+const SETTLE_DELAY = 2000; // Wait for hydration/animations after load
 
 // Vercel/Lambda: Chromium binaries are downloaded at runtime from this pack URL.
 const CHROMIUM_PACK_URL =
@@ -78,13 +78,15 @@ export async function captureScreenshot(url: string): Promise<Buffer> {
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     );
 
-    // Navigate to the page
+    // Use "load" instead of "networkidle2". SPAs and sites with WebSockets,
+    // polling, or analytics (e.g. alphaxiv.org) never reach network idle and
+    // hit the navigation timeout even though the page is visually ready.
     await page.goto(url, {
-      waitUntil: "networkidle2",
+      waitUntil: "load",
       timeout: TIMEOUT,
     });
 
-    // Wait for any animations/transitions to settle
+    // Let client-side rendering and transitions settle before capturing.
     await page.evaluate(
       (delay) => new Promise((resolve) => setTimeout(resolve, delay)),
       SETTLE_DELAY,
