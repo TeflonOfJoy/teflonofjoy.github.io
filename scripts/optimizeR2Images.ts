@@ -41,7 +41,7 @@ const s3Client = new S3Client({
   },
 });
 
-const BUCKET_NAME = "brios";
+const BUCKET_NAME = process.env.R2_BUCKET_NAME!;
 const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL!;
 const MAX_SIZE = 80; // Maximum width or height in pixels
 
