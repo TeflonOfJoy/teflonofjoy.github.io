@@ -52,6 +52,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "pub-69346df8bffc4907bbde2b554f176e29.r2.dev",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.thestorygraph.com",
+      },
     ],
   },
 };
