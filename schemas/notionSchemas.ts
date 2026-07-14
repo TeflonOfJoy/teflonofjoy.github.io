@@ -54,23 +54,6 @@ export const DesignDetailsEpisodesSchema = z.object({
 
 export type DesignDetailsEpisodes = z.infer<typeof DesignDetailsEpisodesSchema>;
 
-export const MusicSchema = z.object({
-  "Spotify ID": z.string().optional(),
-  Duration: z.number().optional(),
-  Journal: z.array(z.object({ id: z.string() })).optional(),
-  "Spotify URL": z.string().optional(),
-  "Dupe Key": z.string().optional(),
-  Artist: z.string().optional(),
-  Album: z.string().optional(),
-  Popularity: z.number().optional(),
-  "Played At": z.string().optional(),
-  "Album Art": z.string().optional(),
-  Explicit: z.boolean().optional(),
-  Name: z.string().optional(),
-});
-
-export type Music = z.infer<typeof MusicSchema>;
-
 export const GoodWebsitesSchema = z.object({
   "Preview Status": z.enum(["Queued", "Processing", "Done", "Error", "Pending"]).optional(),
   "Created time": z.string().optional(),
@@ -88,14 +71,6 @@ export const GoodWebsitesSchema = z.object({
 });
 
 export type GoodWebsites = z.infer<typeof GoodWebsitesSchema>;
-
-export const SpeakingSchema = z.object({
-  URL: z.string().optional(),
-  Date: z.string().optional(),
-  Name: z.string().optional(),
-});
-
-export type Speaking = z.infer<typeof SpeakingSchema>;
 
 export const TILSchema = z.object({
   "Generate Short ID": z.any().optional(),

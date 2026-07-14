@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { createArticleJsonLd, createMetadata, truncateDescription } from "@/lib/metadata";
-import { getAppDissectionDatabaseItems, getAppDissectionItemBySlug } from "@/lib/notion/queries";
+import { getBookDigestItemBySlug, getBookDigestItems } from "@/lib/notion/queries";
 import { extractPreviewText } from "@/lib/notion/types";
 
-import { AppDissectionDetail } from "./components/AppDissectionDetail";
+import { BookDigestDetail } from "./components/BookDigestDetail";
 
 export const revalidate = 3600;
 
@@ -17,30 +17,30 @@ export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
-  const post = await getAppDissectionItemBySlug(params.slug);
+  const post = await getBookDigestItemBySlug(params.slug);
 
   if (!post) {
     return {
-      title: "App Dissection Not Found",
+      title: "Book Digest Not Found",
     };
   }
 
   const descriptionText = extractPreviewText(post.introBlocks, { separator: " " });
 
   return createMetadata({
-    title: `${post.name} - App Dissection`,
+    title: `${post.title} - Book Digest`,
     description: truncateDescription(descriptionText),
-    path: `/app-dissection/${post.slug}`,
+    path: `/book-digest/${post.slug}`,
     type: "article",
     publishedTime: post.published,
   });
 }
 
-export default async function AppDissectionPostPage(props: { params: Promise<{ slug: string }> }) {
+export default async function BookDigestPostPage(props: { params: Promise<{ slug: string }> }) {
   const params = await props.params;
   const [post, allItems] = await Promise.all([
-    getAppDissectionItemBySlug(params.slug),
-    getAppDissectionDatabaseItems(),
+    getBookDigestItemBySlug(params.slug),
+    getBookDigestItems(),
   ]);
 
   if (!post) {
@@ -51,9 +51,9 @@ export default async function AppDissectionPostPage(props: { params: Promise<{ s
 
   // Generate JSON-LD structured data
   const articleJsonLd = createArticleJsonLd({
-    title: `${post.name} - App Dissection`,
+    title: `${post.title} - Book Digest`,
     description: descriptionText,
-    path: `/app-dissection/${post.slug}`,
+    path: `/book-digest/${post.slug}`,
     publishedTime: post.published,
   });
 
@@ -63,7 +63,7 @@ export default async function AppDissectionPostPage(props: { params: Promise<{ s
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <AppDissectionDetail post={post} allItems={allItems} />
+      <BookDigestDetail post={post} allItems={allItems} />
     </>
   );
 }

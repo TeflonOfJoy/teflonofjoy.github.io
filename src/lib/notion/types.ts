@@ -15,10 +15,6 @@ export {
   DesignDetailsEpisodesSchema,
   type GoodWebsites,
   GoodWebsitesSchema,
-  type Music,
-  MusicSchema,
-  type Speaking,
-  SpeakingSchema,
   type Stack,
   StackSchema,
   type TIL,
@@ -126,17 +122,6 @@ export type GoodWebsiteItemWithDate = GoodWebsiteItem & {
   createdTime: string;
 };
 
-// Listening history item type
-export type NotionListeningHistoryItem = {
-  id: string;
-  name: string;
-  artist: string;
-  album: string;
-  url?: string;
-  playedAt: string;
-  image?: string;
-};
-
 // Design Details episode item type
 export type NotionDesignDetailsEpisodeItem = {
   id: string;
@@ -147,14 +132,6 @@ export type NotionDesignDetailsEpisodeItem = {
   publishedDate?: string;
   imageUrl?: string;
   audioUrl?: string;
-};
-
-// Speaking item type
-export type NotionSpeakingItem = {
-  id: string;
-  title: string;
-  date: string;
-  href?: string;
 };
 
 // TIL item type
@@ -169,32 +146,33 @@ export type NotionTilItemWithContent = NotionTilItem & {
   blocks: ProcessedBlock[];
 };
 
-// App Dissection types
-export type NotionAppDissectionItem = {
+// Book Digest types
+export type NotionBookDigestItem = {
   id: string;
-  name: string;
+  title: string;
   slug: string;
-  description: string;
+  author?: string;
+  cover: string;
+  tags?: string[];
   published: string;
-  icon: string;
   status: string;
 };
 
-export type AppDissectionVideoMetadata = {
-  type: "app-dissection-video";
+export type BookDigestMediaMetadata = {
+  type: "book-digest-video";
   urls: string[];
   orientation: "portrait" | "landscape";
 };
 
-export type AppDissectionDetail = {
+export type BookDigestSection = {
   title: string;
   descriptionBlocks: ProcessedBlock[];
-  video?: AppDissectionVideoMetadata;
+  media?: BookDigestMediaMetadata;
 };
 
-export type NotionAppDissectionItemWithContent = NotionAppDissectionItem & {
+export type NotionBookDigestItemWithContent = NotionBookDigestItem & {
   introBlocks: ProcessedBlock[];
-  details: AppDissectionDetail[];
+  sections: BookDigestSection[];
 };
 
 // Type guard to check if a page has properties
@@ -241,13 +219,13 @@ export function extractPreviewText(
   return limited.map((block) => block.content.map((c) => c.text.content).join("")).join(separator);
 }
 
-// Type guard for video metadata validation
-export function isValidVideoMetadata(parsed: unknown): parsed is AppDissectionVideoMetadata {
+// Type guard for section media metadata validation
+export function isValidBookDigestMedia(parsed: unknown): parsed is BookDigestMediaMetadata {
   return (
     typeof parsed === "object" &&
     parsed !== null &&
-    (parsed as AppDissectionVideoMetadata).type === "app-dissection-video" &&
-    Array.isArray((parsed as AppDissectionVideoMetadata).urls) &&
-    ["portrait", "landscape"].includes((parsed as AppDissectionVideoMetadata).orientation)
+    (parsed as BookDigestMediaMetadata).type === "book-digest-video" &&
+    Array.isArray((parsed as BookDigestMediaMetadata).urls) &&
+    ["portrait", "landscape"].includes((parsed as BookDigestMediaMetadata).orientation)
   );
 }

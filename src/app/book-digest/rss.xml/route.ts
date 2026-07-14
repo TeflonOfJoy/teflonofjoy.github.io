@@ -1,25 +1,25 @@
 import { Feed } from "feed";
 
 import { SITE_CONFIG } from "@/lib/metadata";
-import { getAppDissectionDatabaseItems, getAppDissectionItemBySlug } from "@/lib/notion/queries";
+import { getBookDigestItemBySlug, getBookDigestItems } from "@/lib/notion/queries";
 import { extractPreviewText } from "@/lib/notion/types";
 
 export async function GET() {
   try {
-    const items = await getAppDissectionDatabaseItems();
+    const items = await getBookDigestItems();
 
     const feed = new Feed({
-      title: `${SITE_CONFIG.name} - App Dissection`,
-      description: "Detailed design breakdowns of iOS and Android apps",
-      id: `${SITE_CONFIG.url}/app-dissection`,
-      link: `${SITE_CONFIG.url}/app-dissection`,
+      title: `${SITE_CONFIG.name} - Book Digest`,
+      description: "Breakdowns and notes from the books I read",
+      id: `${SITE_CONFIG.url}/book-digest`,
+      link: `${SITE_CONFIG.url}/book-digest`,
       language: "en",
       image: `${SITE_CONFIG.url}/api/og`,
       favicon: `${SITE_CONFIG.url}/favicon.ico`,
       copyright: `All rights reserved ${new Date().getFullYear()}, ${SITE_CONFIG.author.name}`,
       updated: new Date(),
       feedLinks: {
-        rss: `${SITE_CONFIG.url}/app-dissection/rss.xml`,
+        rss: `${SITE_CONFIG.url}/book-digest/rss.xml`,
       },
       author: {
         name: SITE_CONFIG.author.name,
@@ -31,7 +31,7 @@ export async function GET() {
     const itemsWithContent = await Promise.all(
       items.map(async (item) => {
         try {
-          const content = await getAppDissectionItemBySlug(item.slug);
+          const content = await getBookDigestItemBySlug(item.slug);
           return { item, content };
         } catch {
           return { item, content: null };
@@ -40,7 +40,7 @@ export async function GET() {
     );
 
     itemsWithContent.forEach(({ item, content }) => {
-      const itemUrl = `${SITE_CONFIG.url}/app-dissection/${item.slug}`;
+      const itemUrl = `${SITE_CONFIG.url}/book-digest/${item.slug}`;
       const publishDate = new Date(item.published);
 
       // Build description with intro text and view link
@@ -51,11 +51,11 @@ export async function GET() {
           descriptionParts.push(introText);
         }
       }
-      descriptionParts.push(`View full dissection: ${itemUrl}`);
+      descriptionParts.push(`View full digest: ${itemUrl}`);
       const description = descriptionParts.join("\n\n");
 
       feed.addItem({
-        title: item.name,
+        title: item.title,
         id: item.slug,
         link: itemUrl,
         description,
@@ -77,7 +77,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error generating App Dissection RSS feed:", error);
+    console.error("Error generating Book Digest RSS feed:", error);
     return new Response("Error generating RSS feed", { status: 500 });
   }
 }

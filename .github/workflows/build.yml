@@ -37,4 +37,3 @@ jobs:
           NOTION_TOKEN: "build-placeholder"
           NOTION_STACK_DATABASE_ID: "build-placeholder"
           NOTION_DESIGN_DETAILS_EPISODES_DATABASE_ID: "build-placeholder"
-          NOTION_MUSIC_DATABASE_ID: "build-placeholder"

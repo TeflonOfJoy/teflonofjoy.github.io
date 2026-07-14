@@ -10,10 +10,8 @@ export type {
   DesignDetailsEpisodes,
   GoodWebsiteItem,
   GoodWebsiteItemWithDate,
-  Music,
   NotionDesignDetailsEpisodeItem,
   NotionItem,
-  NotionListeningHistoryItem,
   NotionStackItem,
   NotionTilItem,
   NotionTilItemWithContent,
@@ -30,7 +28,7 @@ export type {
 } from "./types";
 
 // Zod schemas
-export { DesignDetailsEpisodesSchema, MusicSchema, StackSchema, TILSchema } from "./types";
+export { DesignDetailsEpisodesSchema, StackSchema, TILSchema } from "./types";
 
 // Type guards and utilities
 export { extractPlainText, hasProperties, isBlockObjectResponse } from "./types";
@@ -47,10 +45,6 @@ export {
   // Good Websites
   getGoodWebsitesDatabaseItems,
   getGoodWebsitesDatabaseItemsForRss,
-  // Listening History
-  getListeningHistoryDatabaseItems,
-  // Speaking
-  getSpeakingItems,
   // Stack
   getStackDatabaseItems,
   // TIL

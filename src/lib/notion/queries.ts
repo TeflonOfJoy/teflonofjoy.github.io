@@ -7,17 +7,15 @@ import { getAllBlocks } from "./blocks";
 import { CACHE_TTLS, cachedNotionQuery } from "./cache";
 import { notion } from "./client";
 import {
-  type AppDissectionDetail,
+  type BookDigestSection,
   type GoodWebsiteItem,
   type GoodWebsiteItemWithDate,
   hasProperties,
-  isValidVideoMetadata,
-  type NotionAppDissectionItem,
-  type NotionAppDissectionItemWithContent,
+  isValidBookDigestMedia,
+  type NotionBookDigestItem,
+  type NotionBookDigestItemWithContent,
   type NotionDesignDetailsEpisodeItem,
   type NotionItem,
-  type NotionListeningHistoryItem,
-  type NotionSpeakingItem,
   type NotionStackItem,
   type NotionTilItem,
   type NotionTilItemWithContent,
@@ -294,70 +292,6 @@ export async function getGoodWebsitesDatabaseItemsForRss(): Promise<GoodWebsiteI
   );
 }
 
-// ===== Listening History Database =====
-
-export async function getListeningHistoryDatabaseItems(
-  cursor?: string,
-  pageSize: number = 20,
-): Promise<{ items: NotionListeningHistoryItem[]; nextCursor: string | null }> {
-  return cachedNotionQuery(
-    `notion:listening:list:${cursor || "start"}:${pageSize}`,
-    async () => {
-      const databaseId = process.env.NOTION_MUSIC_DATABASE_ID || "";
-      const dataSourceId = await getDataSourceId(databaseId);
-      const response = await notion.dataSources.query({
-        data_source_id: dataSourceId,
-        page_size: pageSize,
-        ...(cursor ? { start_cursor: cursor } : {}),
-        sorts: [
-          {
-            property: "Played At",
-            direction: "descending",
-          },
-        ],
-      });
-
-      const items = response.results
-        .map((page) => {
-          if (!hasProperties(page)) return null;
-
-          const pageWithIcon = page as PageObjectResponse;
-          const icon =
-            pageWithIcon.icon?.type === "file"
-              ? pageWithIcon.icon.file.url
-              : pageWithIcon.icon?.type === "external"
-                ? pageWithIcon.icon.external.url
-                : undefined;
-
-          const properties = pageWithIcon.properties as {
-            Name?: { title: { plain_text: string }[] };
-            Artist?: { rich_text: { plain_text: string }[] };
-            Album?: { rich_text: { plain_text: string }[] };
-            "Spotify URL"?: { url: string };
-            "Played At"?: { date: { start: string } | null };
-          };
-
-          return {
-            id: pageWithIcon.id,
-            name: properties.Name?.title[0]?.plain_text || "Untitled",
-            artist: properties.Artist?.rich_text[0]?.plain_text || "",
-            album: properties.Album?.rich_text[0]?.plain_text || "",
-            url: properties["Spotify URL"]?.url || undefined,
-            playedAt: properties["Played At"]?.date?.start || pageWithIcon.created_time,
-            image: icon,
-          } as NotionListeningHistoryItem;
-        })
-        .filter((item): item is NotionListeningHistoryItem => item !== null);
-
-      return {
-        items,
-        nextCursor: response.has_more ? (response.next_cursor as string) : null,
-      };
-    },
-    { ttl: CACHE_TTLS.LIST },
-  );
-}
-
 // ===== Design Details Episodes Database =====
 
 export async function getDesignDetailsEpisodeDatabaseItems(
@@ -413,50 +347,6 @@ export async function getDesignDetailsEpisodeDatabaseItems(
         items,
         nextCursor: response.has_more ? (response.next_cursor as string) : null,
       };
-    },
-    { ttl: CACHE_TTLS.LIST },
-  );
-}
-
-// ===== Speaking Database =====
-
-export async function getSpeakingItems(): Promise<NotionSpeakingItem[]> {
-  return cachedNotionQuery(
-    "notion:speaking:list",
-    async () => {
-      const databaseId = process.env.NOTION_SPEAKING_DATABASE_ID || "";
-      const dataSourceId = await getDataSourceId(databaseId);
-      const response = await notion.dataSources.query({
-        data_source_id: dataSourceId,
-        sorts: [
-          {
-            property: "Date",
-            direction: "descending",
-          },
-        ],
-      });
-
-      const items = response.results
-        .map((page) => {
-          if (!hasProperties(page)) return null;
-
-          const pageWithProps = page as PageObjectResponse;
-          const properties = pageWithProps.properties as {
-            Name?: { title: { plain_text: string }[] };
-            Date?: { date: { start: string } | null };
-            URL?: { url: string };
-          };
-
-          return {
-            id: pageWithProps.id,
-            title: properties.Name?.title[0]?.plain_text || "Untitled",
-            date: properties.Date?.date?.start || pageWithProps.created_time,
-            href: properties.URL?.url || undefined,
-          } as NotionSpeakingItem;
-        })
-        .filter((item): item is NotionSpeakingItem => item !== null);
-
-      return items;
     },
     { ttl: CACHE_TTLS.LIST },
   );
@@ -582,13 +472,31 @@ export async function getTilByShortId(shortId: string): Promise<NotionTilItemWit
   );
 }
 
-// ===== App Dissection Database =====
+// ===== Book Digest Database =====
 
-export async function getAppDissectionDatabaseItems(): Promise<NotionAppDissectionItem[]> {
+type BookDigestProperties = {
+  Name?: { title: { plain_text: string }[] };
+  Slug?: { rich_text: { plain_text: string }[] };
+  Author?: { rich_text: { plain_text: string }[] };
+  Cover?: { url: string };
+  Tags?: { multi_select: { name: string }[] };
+  Published?: { date: { start: string } | null };
+  Status?: { select: { name: string } | null };
+};
+
+function getPageIcon(page: PageObjectResponse): string {
+  return page.icon?.type === "file"
+    ? page.icon.file.url
+    : page.icon?.type === "external"
+      ? page.icon.external.url
+      : "";
+}
+
+export async function getBookDigestItems(): Promise<NotionBookDigestItem[]> {
   return cachedNotionQuery(
-    "notion:app-dissection:list",
+    "notion:book-digest:list",
     async () => {
-      const databaseId = process.env.NOTION_APP_DISSECTION_DATABASE_ID || "";
+      const databaseId = process.env.NOTION_BOOK_DIGEST_DATABASE_ID || "";
       const dataSourceId = await getDataSourceId(databaseId);
       const response = await notion.dataSources.query({
         data_source_id: dataSourceId,
@@ -611,33 +519,20 @@ export async function getAppDissectionDatabaseItems(): Promise<NotionAppDissecti
           if (!hasProperties(page)) return null;
 
           const pageWithProps = page as PageObjectResponse;
-
-          const icon =
-            pageWithProps.icon?.type === "file"
-              ? pageWithProps.icon.file.url
-              : pageWithProps.icon?.type === "external"
-                ? pageWithProps.icon.external.url
-                : "";
-
-          const properties = pageWithProps.properties as {
-            Name?: { title: { plain_text: string }[] };
-            Slug?: { rich_text: { plain_text: string }[] };
-            Published?: { date: { start: string } | null };
-            Icon?: { url: string };
-            Status?: { select: { name: string } | null };
-          };
+          const properties = pageWithProps.properties as BookDigestProperties;
 
           return {
             id: pageWithProps.id,
-            name: properties.Name?.title[0]?.plain_text || "Untitled",
+            title: properties.Name?.title[0]?.plain_text || "Untitled",
             slug: properties.Slug?.rich_text[0]?.plain_text || "",
-            description: "",
+            author: properties.Author?.rich_text[0]?.plain_text || undefined,
+            cover: properties.Cover?.url || getPageIcon(pageWithProps),
+            tags: properties.Tags?.multi_select.map((t) => t.name) || [],
             published: properties.Published?.date?.start || pageWithProps.created_time,
-            icon: properties.Icon?.url || icon,
             status: properties.Status?.select?.name || "Draft",
-          } as NotionAppDissectionItem;
+          } as NotionBookDigestItem;
         })
-        .filter((item): item is NotionAppDissectionItem => item !== null);
+        .filter((item): item is NotionBookDigestItem => item !== null);
 
       return items;
     },
@@ -645,13 +540,13 @@ export async function getAppDissectionDatabaseItems(): Promise<NotionAppDissecti
   );
 }
 
-export async function getAppDissectionItemBySlug(
+export async function getBookDigestItemBySlug(
   slug: string,
-): Promise<NotionAppDissectionItemWithContent | null> {
+): Promise<NotionBookDigestItemWithContent | null> {
   return cachedNotionQuery(
-    `notion:app-dissection:content:${slug}`,
+    `notion:book-digest:content:${slug}`,
     async () => {
-      const databaseId = process.env.NOTION_APP_DISSECTION_DATABASE_ID || "";
+      const databaseId = process.env.NOTION_BOOK_DIGEST_DATABASE_ID || "";
       const dataSourceId = await getDataSourceId(databaseId);
       const response = await notion.dataSources.query({
         data_source_id: dataSourceId,
@@ -681,30 +576,16 @@ export async function getAppDissectionItemBySlug(
       if (!hasProperties(page)) return null;
 
       const pageWithProps = page as PageObjectResponse;
-
-      const icon =
-        pageWithProps.icon?.type === "file"
-          ? pageWithProps.icon.file.url
-          : pageWithProps.icon?.type === "external"
-            ? pageWithProps.icon.external.url
-            : "";
-
-      const properties = pageWithProps.properties as {
-        Name?: { title: { plain_text: string }[] };
-        Slug?: { rich_text: { plain_text: string }[] };
-        Published?: { date: { start: string } | null };
-        Icon?: { url: string };
-        Status?: { select: { name: string } | null };
-      };
+      const properties = pageWithProps.properties as BookDigestProperties;
 
       // Get all blocks from the page
       const blocks = await getAllBlocks(page.id);
 
-      // Parse blocks into intro and detail sections
+      // Parse blocks into intro and content sections
       const introBlocks: ProcessedBlock[] = [];
-      const details: AppDissectionDetail[] = [];
+      const sections: BookDigestSection[] = [];
 
-      let currentDetail: AppDissectionDetail | null = null;
+      let currentSection: BookDigestSection | null = null;
       let inIntro = true;
 
       for (const block of blocks) {
@@ -719,50 +600,51 @@ export async function getAppDissectionItemBySlug(
         }
 
         if (block.type === "heading_2") {
-          if (currentDetail) {
-            details.push(currentDetail);
+          if (currentSection) {
+            sections.push(currentSection);
           }
-          currentDetail = {
+          currentSection = {
             title: block.content.map((c) => c.text.content).join(""),
             descriptionBlocks: [],
           };
           continue;
         }
 
-        if (block.type === "code" && block.language === "json" && currentDetail) {
+        if (block.type === "code" && block.language === "json" && currentSection) {
           const jsonContent = block.content.map((c) => c.text.content).join("");
           try {
             const parsed = JSON.parse(jsonContent);
-            if (isValidVideoMetadata(parsed)) {
-              currentDetail.video = parsed;
+            if (isValidBookDigestMedia(parsed)) {
+              currentSection.media = parsed;
             } else {
-              currentDetail.descriptionBlocks.push(block);
+              currentSection.descriptionBlocks.push(block);
             }
           } catch {
-            currentDetail.descriptionBlocks.push(block);
+            currentSection.descriptionBlocks.push(block);
           }
           continue;
         }
 
-        if (currentDetail) {
-          currentDetail.descriptionBlocks.push(block);
+        if (currentSection) {
+          currentSection.descriptionBlocks.push(block);
         }
       }
 
-      if (currentDetail) {
-        details.push(currentDetail);
+      if (currentSection) {
+        sections.push(currentSection);
       }
 
       return {
         id: pageWithProps.id,
-        name: properties.Name?.title[0]?.plain_text || "Untitled",
+        title: properties.Name?.title[0]?.plain_text || "Untitled",
         slug: properties.Slug?.rich_text[0]?.plain_text || "",
-        description: "",
+        author: properties.Author?.rich_text[0]?.plain_text || undefined,
+        cover: properties.Cover?.url || getPageIcon(pageWithProps),
+        tags: properties.Tags?.multi_select.map((t) => t.name) || [],
         published: properties.Published?.date?.start || pageWithProps.created_time,
-        icon: properties.Icon?.url || icon,
         status: properties.Status?.select?.name || "Draft",
         introBlocks,
-        details,
+        sections,
       };
     },
     { ttl: CACHE_TTLS.CONTENT },

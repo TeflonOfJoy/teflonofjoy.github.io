@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Suspense } from "react";
 
 import { ProjectsList } from "@/components/home/ProjectsList";
-import { SpeakingList } from "@/components/home/SpeakingList";
-import { SpeakingListSkeleton } from "@/components/home/SpeakingListSkeleton";
 import { GitHubIcon } from "@/components/icons/SocialIcons";
 import { InlineLink, ListItem, Section, SectionHeading } from "@/components/shared/ListComponents";
 import { createMetadata, createPersonJsonLd, SITE_CONFIG } from "@/lib/metadata";
@@ -62,13 +59,6 @@ export default function About() {
             <Section>
               <SectionHeading>Projects</SectionHeading>
               <ProjectsList />
-            </Section>
-
-            <Section>
-              <SectionHeading>Speaking</SectionHeading>
-              <Suspense fallback={<SpeakingListSkeleton />}>
-                <SpeakingList />
-              </Suspense>
             </Section>
           </div>
         </div>

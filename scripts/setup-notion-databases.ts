@@ -13,6 +13,10 @@
  * The script prints the resulting NOTION_*_DATABASE_ID values so you can paste
  * them into Vercel (or your local .env). Re-running creates NEW databases, so
  * only run it once per environment.
+ *
+ * To create only a subset (e.g. when adding a new section later), set the ONLY
+ * env var to a comma-separated list of database titles:
+ *   ONLY="Book Digest" NOTION_TOKEN=secret_xxx bun scripts/setup-notion-databases.ts <parentPageId>
  */
 
 const NOTION_VERSION = "2022-06-28";
@@ -74,17 +78,6 @@ const DATABASES: DatabaseDefinition[] = [
     },
   },
   {
-    title: "Listening",
-    envKey: "NOTION_MUSIC_DATABASE_ID",
-    properties: {
-      Name: { title: {} },
-      Artist: { rich_text: {} },
-      Album: { rich_text: {} },
-      "Spotify URL": { url: {} },
-      "Played At": { date: {} },
-    },
-  },
-  {
     title: "Design Details Episodes",
     envKey: "NOTION_DESIGN_DETAILS_EPISODES_DATABASE_ID",
     properties: {
@@ -95,15 +88,6 @@ const DATABASES: DatabaseDefinition[] = [
       "Published Date": { date: {} },
       "Image URL": { url: {} },
       "Audio URL (S3)": { url: {} },
-    },
-  },
-  {
-    title: "Speaking",
-    envKey: "NOTION_SPEAKING_DATABASE_ID",
-    properties: {
-      Name: { title: {} },
-      Date: { date: {} },
-      URL: { url: {} },
     },
   },
   {
@@ -118,13 +102,15 @@ const DATABASES: DatabaseDefinition[] = [
     },
   },
   {
-    title: "App Dissection",
-    envKey: "NOTION_APP_DISSECTION_DATABASE_ID",
+    title: "Book Digest",
+    envKey: "NOTION_BOOK_DIGEST_DATABASE_ID",
     properties: {
       Name: { title: {} },
       Slug: { rich_text: {} },
+      Author: { rich_text: {} },
+      Cover: { url: {} },
+      Tags: { multi_select: {} },
       Published: { date: {} },
-      Icon: { url: {} },
       // The list query filters on Status = "Published", so that option must exist.
       Status: {
         select: {
@@ -178,11 +164,28 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`Creating ${DATABASES.length} databases under page ${parentPageId}\n`);
+  // Optional filter: ONLY="Book Digest,Stack" creates only the matching databases
+  // (case-insensitive, matched against the database title). Useful for incremental setup.
+  const onlyFilter = (process.env.ONLY || "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+
+  const toCreate = onlyFilter.length
+    ? DATABASES.filter((db) => onlyFilter.includes(db.title.toLowerCase()))
+    : DATABASES;
+
+  if (toCreate.length === 0) {
+    console.error(`Error: ONLY filter "${process.env.ONLY}" matched no databases.`);
+    console.error(`Available: ${DATABASES.map((d) => d.title).join(", ")}`);
+    process.exit(1);
+  }
+
+  console.log(`Creating ${toCreate.length} database(s) under page ${parentPageId}\n`);
 
   const results: { envKey: string; id: string }[] = [];
 
-  for (const def of DATABASES) {
+  for (const def of toCreate) {
     process.stdout.write(`- ${def.title} ... `);
     const id = await createDatabase(parentPageId, def);
     results.push({ envKey: def.envKey, id });

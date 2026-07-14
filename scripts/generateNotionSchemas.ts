@@ -112,9 +112,7 @@ async function generateSchemas() {
       varName: "DesignDetailsEpisodes",
       id: process.env.NOTION_DESIGN_DETAILS_EPISODES_DATABASE_ID,
     },
-    { varName: "Music", id: process.env.NOTION_MUSIC_DATABASE_ID },
     { varName: "GoodWebsites", id: process.env.NOTION_GOOD_WEBSITES_DATABASE_ID },
-    { varName: "Speaking", id: process.env.NOTION_SPEAKING_DATABASE_ID },
     { varName: "TIL", id: process.env.NOTION_TIL_DATABASE_ID },
   ];
 

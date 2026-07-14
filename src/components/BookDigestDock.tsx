@@ -6,11 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 
-import type { NotionAppDissectionItem } from "@/lib/notion/types";
+import type { NotionBookDigestItem } from "@/lib/notion/types";
 
-const SCALE = 1.4; // max scale factor of an icon
-const DISTANCE = 110; // pixels before mouse affects an icon
-const NUDGE = 30; // pixels icons are moved away from mouse
+const SCALE = 1.4; // max scale factor of a cover
+const DISTANCE = 110; // pixels before mouse affects a cover
+const NUDGE = 30; // pixels covers are moved away from mouse
 const SPRING = {
   mass: 0.1,
   stiffness: 150,
@@ -21,11 +21,11 @@ const SPRING = {
 const ITEMS_PER_SIDE_DESKTOP = 3; // Shows 7 total (current + 3 on each side)
 
 interface Props {
-  items: NotionAppDissectionItem[];
+  items: NotionBookDigestItem[];
   currentSlug: string;
 }
 
-export function AppDissectionDock({ items, currentSlug }: Props) {
+export function BookDigestDock({ items, currentSlug }: Props) {
   const mouseLeft = useMotionValue(-Infinity);
   const mouseRight = useMotionValue(-Infinity);
   const left = useTransform(mouseLeft, [0, 40], [0, -40]);
@@ -72,7 +72,7 @@ export function AppDissectionDock({ items, currentSlug }: Props) {
           mouseLeft.set(-Infinity);
           mouseRight.set(-Infinity);
         }}
-        className="relative flex h-16 items-end gap-3 px-2 pb-3"
+        className="relative flex h-24 items-end gap-3 px-2 pb-3"
       >
         <motion.div
           className="bg-secondary/50 dark:bg-secondary/30 border-secondary/50 dark:border-secondary/20 absolute inset-y-0 -z-10 rounded-2xl border shadow-lg backdrop-blur-xl"
@@ -80,20 +80,20 @@ export function AppDissectionDock({ items, currentSlug }: Props) {
         />
 
         {visibleItems.map((item) => (
-          <AppIcon key={item.slug} mouseLeft={mouseLeft} item={item} currentSlug={currentSlug} />
+          <BookCover key={item.slug} mouseLeft={mouseLeft} item={item} currentSlug={currentSlug} />
         ))}
       </motion.div>
     </div>
   );
 }
 
-interface AppIconProps {
+interface BookCoverProps {
   mouseLeft: MotionValue;
-  item: NotionAppDissectionItem;
+  item: NotionBookDigestItem;
   currentSlug: string;
 }
 
-function AppIcon({ mouseLeft, item, currentSlug }: AppIconProps) {
+function BookCover({ mouseLeft, item, currentSlug }: BookCoverProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isActive = item.slug === currentSlug;
 
@@ -132,21 +132,18 @@ function AppIcon({ mouseLeft, item, currentSlug }: AppIconProps) {
             />
           }
         >
-          <Link
-            href={`/app-dissection/${item.slug}`}
-            className="relative block will-change-transform"
-          >
-            {item.icon ? (
+          <Link href={`/book-digest/${item.slug}`} className="relative block will-change-transform">
+            {item.cover ? (
               <Image
-                src={item.icon}
-                width={60}
-                height={60}
-                alt={`${item.name} icon`}
-                className="border-secondary/50 dark:border-secondary/30 aspect-square rounded-xl border shadow-sm"
+                src={item.cover}
+                width={48}
+                height={64}
+                alt={`${item.title} cover`}
+                className="border-secondary/50 dark:border-secondary/30 h-16 w-12 rounded-md border object-cover shadow-sm"
               />
             ) : (
-              <div className="border-secondary/50 dark:border-secondary/30 bg-tertiary flex h-[60px] w-[60px] items-center justify-center rounded-xl border shadow-sm">
-                <span className="text-tertiary text-xl font-medium">{item.name.charAt(0)}</span>
+              <div className="border-secondary/50 dark:border-secondary/30 bg-tertiary flex h-16 w-12 items-center justify-center rounded-md border shadow-sm">
+                <span className="text-tertiary text-xl font-medium">{item.title.charAt(0)}</span>
               </div>
             )}
             {isActive && (
@@ -161,7 +158,7 @@ function AppIcon({ mouseLeft, item, currentSlug }: AppIconProps) {
         <Tooltip.Portal>
           <Tooltip.Positioner side="bottom" sideOffset={20}>
             <Tooltip.Popup className="bg-elevated dark:shadow-contrast text-primary border-secondary z-50 origin-(--transform-origin) rounded-lg border px-2 py-1.5 text-sm font-medium shadow-sm transition-[transform,scale,opacity] duration-150 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0">
-              {item.name}
+              {item.title}
             </Tooltip.Popup>
           </Tooltip.Positioner>
         </Tooltip.Portal>

@@ -1,10 +1,9 @@
 import React from "react";
 
-import { AppDissection } from "@/components/icons/AppDissection";
 import { Ballot } from "@/components/icons/Ballot";
+import { Book } from "@/components/icons/Book";
 import { BrowserTabs } from "@/components/icons/BrowserTabs";
 import { FileText2 } from "@/components/icons/FileText2";
-import { Headphones3 } from "@/components/icons/Headphones3";
 import { Home } from "@/components/icons/Home";
 import { LightBulb } from "@/components/icons/LightBulb";
 import { Person } from "@/components/icons/Person";
@@ -49,12 +48,12 @@ export const navigationItems: NavigationItem[] = [
     section: "main",
   },
   {
-    id: "app-dissection",
-    label: "App Dissection",
-    href: "/app-dissection",
-    icon: AppDissection,
-    keywords: ["app", "dissection", "analysis"],
-    isActive: (pathname) => pathname.startsWith("/app-dissection"),
+    id: "book-digest",
+    label: "Book Digest",
+    href: "/book-digest",
+    icon: Book,
+    keywords: ["book", "digest", "reading", "books", "notes"],
+    isActive: (pathname) => pathname.startsWith("/book-digest"),
     section: "projects",
   },
   {
@@ -73,15 +72,6 @@ export const navigationItems: NavigationItem[] = [
     icon: LightBulb,
     keywords: ["til", "today i learned", "notes", "learnings"],
     isActive: (pathname) => pathname.startsWith("/til"),
-    section: "projects",
-  },
-  {
-    id: "music",
-    label: "Listening",
-    href: "/listening",
-    icon: Headphones3,
-    keywords: ["listening", "music", "audio"],
-    isActive: (pathname) => pathname === "/listening",
     section: "projects",
   },
   {

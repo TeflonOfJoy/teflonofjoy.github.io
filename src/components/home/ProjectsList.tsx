@@ -8,9 +8,9 @@ import {
 
 const projects = [
   {
-    name: "App Dissection",
-    href: "/app-dissection",
-    description: "Breaking down well-designed apps",
+    name: "Book Digest",
+    href: "/book-digest",
+    description: "Breaking down the books I read",
     external: false,
   },
   {
@@ -23,12 +23,6 @@ const projects = [
     name: "TIL",
     href: "/til",
     description: "Today I learned",
-    external: false,
-  },
-  {
-    name: "Listening",
-    href: "/listening",
-    description: "Music in rotation",
     external: false,
   },
   {

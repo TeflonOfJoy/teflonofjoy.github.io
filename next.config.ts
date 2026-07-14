@@ -16,8 +16,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/app-dissection/:path(rss|RSS|Rss|feed|Feed)",
-        destination: "/app-dissection/rss.xml",
+        source: "/book-digest/:path(rss|RSS|Rss|feed|Feed)",
+        destination: "/book-digest/rss.xml",
         permanent: true,
       },
       {
@@ -37,10 +37,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "imagedelivery.net",
-      },
-      {
-        protocol: "https",
-        hostname: "i.scdn.co",
       },
       // Notion CDN domains for uploaded files
       {
