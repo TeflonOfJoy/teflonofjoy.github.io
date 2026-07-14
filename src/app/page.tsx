@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 
 import { ProjectsList } from "@/components/home/ProjectsList";
-import { ChevronRight } from "@/components/icons/ChevronRight";
 import { GitHubIcon } from "@/components/icons/SocialIcons";
-import { ListItem, Section, SectionHeading } from "@/components/shared/ListComponents";
+import {
+  List,
+  ListItem,
+  ListItemLabel,
+  Section,
+  SectionHeading,
+} from "@/components/shared/ListComponents";
 import { createMetadata, createPersonJsonLd, SITE_CONFIG } from "@/lib/metadata";
 
 const BLOG_URL = "https://blog.teflonofjoy.dev";
@@ -57,32 +61,17 @@ export default function Home() {
             </Section>
 
             <Section>
-              <Link
-                href={BLOG_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center"
-              >
-                <SectionHeading className="group-hover:text-primary transition-colors">
-                  Writing
-                </SectionHeading>
-                <ChevronRight
-                  size={32}
-                  className="text-quaternary group-hover:text-primary transition-all duration-150 group-hover:translate-x-0.5"
-                />
-              </Link>
-              <p className="text-secondary">
-                I write on my blog at{" "}
-                <a
+              <SectionHeading>Writing</SectionHeading>
+              <List>
+                <ListItem
                   href={BLOG_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary underline underline-offset-4"
+                  className="flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-2"
                 >
-                  blog.teflonofjoy.dev
-                </a>
-                .
-              </p>
+                  <ListItemLabel className="sm:line-clamp-1">
+                    Re:Furbed Starting a Blog in Another World
+                  </ListItemLabel>
+                </ListItem>
+              </List>
             </Section>
 
             <Section>
