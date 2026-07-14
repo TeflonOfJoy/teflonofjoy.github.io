@@ -329,3 +329,32 @@ export async function getBestFaviconUrl(url: string): Promise<string> {
     return "https://www.google.com/s2/favicons?sz=128&domain=example.com";
   }
 }
+
+/**
+ * Download an icon image from an HTTP(S) or data URL into a buffer.
+ */
+export async function downloadIconBuffer(iconUrl: string): Promise<Buffer | null> {
+  if (isDataUrl(iconUrl)) {
+    const parsed = parseDataUrl(iconUrl);
+    return parsed?.buffer ?? null;
+  }
+
+  if (!isValidHttpUrl(iconUrl)) {
+    return null;
+  }
+
+  const response = await fetch(iconUrl);
+  if (!response.ok) {
+    return null;
+  }
+
+  return Buffer.from(await response.arrayBuffer());
+}
+
+/**
+ * Resolve and download the best favicon for a site URL.
+ */
+export async function fetchFaviconBuffer(siteUrl: string): Promise<Buffer | null> {
+  const iconUrl = await getBestFaviconUrl(siteUrl);
+  return downloadIconBuffer(iconUrl);
+}

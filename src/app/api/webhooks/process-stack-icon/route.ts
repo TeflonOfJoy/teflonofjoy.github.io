@@ -1,27 +1,53 @@
+import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { NextResponse } from "next/server";
 
 import { errorResponse } from "@/lib/api-utils";
 import { optimizeSiteIcon } from "@/lib/image-processing/optimize";
 import { invalidateNotionCache, notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
+import { downloadIconBuffer, fetchFaviconBuffer } from "@/lib/utils/favicon";
+
+function extractUrlFromPayload(urlProperty: unknown): string | undefined {
+  if (!urlProperty) return undefined;
+  if (typeof urlProperty === "string") return urlProperty;
+  if (typeof urlProperty === "object" && urlProperty !== null && "url" in urlProperty) {
+    const url = (urlProperty as { url?: string | null }).url;
+    return url ?? undefined;
+  }
+  return undefined;
+}
+
+function getPageIconUrl(page: PageObjectResponse): string | undefined {
+  if (!page.icon) return undefined;
+  if (page.icon.type === "external") return page.icon.external.url;
+  if (page.icon.type === "file") return page.icon.file.url;
+  return undefined;
+}
+
+function getPageSiteUrl(page: PageObjectResponse): string | undefined {
+  const urlProperty = page.properties.URL;
+  return urlProperty?.type === "url" ? (urlProperty.url ?? undefined) : undefined;
+}
+
+function getPageImageUrl(page: PageObjectResponse): string | undefined {
+  const imageProperty = page.properties.Image;
+  return imageProperty?.type === "url" ? (imageProperty.url ?? undefined) : undefined;
+}
 
 /**
- * Webhook endpoint to optimize existing Notion page icon and upload to R2
+ * Webhook endpoint to resolve, optimize, and upload a Stack page icon to R2.
  *
  * POST /api/webhooks/process-stack-icon
- * Notion automation payload: { data: { id } }
+ * Notion automation payload: { data: { id, properties?: { URL } } }
  *
  * Flow:
- * 1. Extract page ID from Notion webhook
- * 2. Fetch page from Notion to get existing icon URL
- * 3. Download the icon image as buffer
- * 4. Optimize icon (resize to max 80x80px, compress)
- * 5. Upload to R2 storage
- * 6. Update Notion page icon with R2 URL
+ * 1. Use the existing page icon, Image property, or fetch favicon from URL
+ * 2. Optimize icon (resize to max 80x80px, compress)
+ * 3. Upload to R2 storage
+ * 4. Update Notion page icon with R2 URL
  */
 export async function POST(request: Request) {
   try {
-    // Verify webhook secret
     const webhookSecret = process.env.NOTION_WEBHOOK_VERIFICATION_SECRET;
     const providedSecret = request.headers.get("x-webhook-secret");
     if (!webhookSecret || providedSecret !== webhookSecret) {
@@ -29,57 +55,54 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-
-    // Extract page ID from Notion webhook payload
     const pageId = body.data?.id;
-
-    // Validate required fields
     if (!pageId) {
       console.error("Missing required field: data.id (pageId)", body);
       return errorResponse("Missing required field: data.id (pageId)", 400);
     }
 
-    // Step 1: Fetch the page from Notion to get the current icon
-    const page = await notion.pages.retrieve({ page_id: pageId });
+    const page = (await notion.pages.retrieve({ page_id: pageId })) as PageObjectResponse;
+    const siteUrl = extractUrlFromPayload(body.data?.properties?.URL) ?? getPageSiteUrl(page);
 
-    // Extract icon URL from page
-    let iconUrl: string | undefined;
-    if ("icon" in page && page.icon) {
-      if (page.icon.type === "external") {
-        iconUrl = page.icon.external.url;
-      } else if (page.icon.type === "file") {
-        iconUrl = page.icon.file.url;
+    let iconBuffer: Buffer | null = null;
+    let source = "unknown";
+
+    const pageIconUrl = getPageIconUrl(page);
+    if (pageIconUrl) {
+      iconBuffer = await downloadIconBuffer(pageIconUrl);
+      source = "page-icon";
+    }
+
+    if (!iconBuffer) {
+      const imageUrl = getPageImageUrl(page);
+      if (imageUrl) {
+        iconBuffer = await downloadIconBuffer(imageUrl);
+        source = "image-property";
       }
     }
 
-    if (!iconUrl) {
-      console.error("Page has no icon to process", pageId, body);
-      return errorResponse("Page has no icon to process", 400);
+    if (!iconBuffer && siteUrl) {
+      iconBuffer = await fetchFaviconBuffer(siteUrl);
+      source = "favicon";
     }
 
-    console.log(`Processing icon for page ${pageId}: ${iconUrl}`);
-
-    // Step 2: Download the icon
-    const iconResponse = await fetch(iconUrl);
-    if (!iconResponse.ok) {
-      console.error("Failed to download icon", iconUrl, body);
-      return errorResponse("Failed to download icon", 500);
+    if (!iconBuffer) {
+      console.error("No icon source available for page", pageId, body);
+      return errorResponse(
+        "No icon source available. Set a page icon, Image property, or URL.",
+        400,
+      );
     }
 
-    const iconArrayBuffer = await iconResponse.arrayBuffer();
-    const iconBuffer = Buffer.from(iconArrayBuffer);
+    console.log(`Processing stack icon for page ${pageId} from ${source}`);
 
-    // Step 3: Optimize the icon (resize to max 80x80px, compress)
     const optimized = await optimizeSiteIcon(iconBuffer);
-
     console.log(
       `Optimized icon: ${optimized.width}x${optimized.height}, ${(optimized.optimizedSize / 1024).toFixed(2)}KB (saved ${optimized.savings.toFixed(1)}%)`,
     );
 
-    // Step 4: Upload optimized icon to R2
     const r2Url = await uploadBufferToR2(optimized.buffer, optimized.contentType);
 
-    // Step 5: Update Notion page icon with R2 URL
     await notion.pages.update({
       page_id: pageId,
       icon: {
@@ -88,14 +111,14 @@ export async function POST(request: Request) {
       },
     });
 
-    // Invalidate stack cache so the updated icon is picked up
     await invalidateNotionCache("notion:stack:*");
 
     return NextResponse.json(
       {
         success: true,
-        message: "Stack icon optimized and uploaded to R2 successfully",
+        message: "Stack icon processed and uploaded to R2 successfully",
         iconUrl: r2Url,
+        source,
         originalSize: iconBuffer.length,
         optimizedSize: optimized.optimizedSize,
         savings: `${optimized.savings.toFixed(1)}%`,
