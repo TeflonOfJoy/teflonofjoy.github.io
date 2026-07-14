@@ -1,5 +1,4 @@
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { after } from "next/server";
 import { NextResponse } from "next/server";
 
 import { errorResponse } from "@/lib/api-utils";
@@ -12,7 +11,6 @@ import {
   extractUrlFromWebhookBody,
 } from "@/lib/webhooks/notion-automation-payload";
 
-// Icon upload can run in the background after the 202 response.
 export const maxDuration = 60;
 
 /**
@@ -21,7 +19,8 @@ export const maxDuration = 60;
  * POST /api/webhooks/update-site-icon
  * Notion automation payload: same as capture-site-preview (`data.id` from button clicks)
  *
- * Returns 202 immediately — Notion times out webhook calls after ~5 seconds.
+ * Runs synchronously — favicon fetch + R2 upload completes in a few seconds,
+ * within Notion's ~5 second webhook timeout.
  */
 export async function POST(request: Request) {
   try {
@@ -57,42 +56,36 @@ export async function POST(request: Request) {
       return errorResponse("Invalid URL format", 400);
     }
 
-    after(async () => {
-      try {
-        const faviconBuffer = await fetchWebhookFaviconBuffer(url);
-        if (!faviconBuffer) {
-          console.error("Failed to fetch favicon for webhook", url, pageId);
-          return;
-        }
+    const faviconBuffer = await fetchWebhookFaviconBuffer(url);
+    if (!faviconBuffer) {
+      console.error("Failed to fetch favicon for webhook", url, pageId);
+      return errorResponse("Failed to fetch favicon", 500);
+    }
 
-        const optimized = await optimizeSiteIcon(faviconBuffer);
-        console.log(
-          `[Site Icon] Optimized ${pageId}: ${optimized.width}x${optimized.height}, ${(optimized.optimizedSize / 1024).toFixed(2)}KB`,
-        );
+    const optimized = await optimizeSiteIcon(faviconBuffer);
+    console.log(
+      `[Site Icon] Optimized ${pageId}: ${optimized.width}x${optimized.height}, ${(optimized.optimizedSize / 1024).toFixed(2)}KB`,
+    );
 
-        const r2Url = await uploadBufferToR2(optimized.buffer, optimized.contentType);
+    const r2Url = await uploadBufferToR2(optimized.buffer, optimized.contentType);
 
-        await notion.pages.update({
-          page_id: pageId,
-          icon: {
-            type: "external",
-            external: { url: r2Url },
-          },
-        });
-
-        console.log(`[Site Icon] Updated ${pageId} → ${r2Url}`);
-      } catch (error) {
-        console.error(`[Site Icon] Background job failed for ${pageId}:`, error);
-      }
+    await notion.pages.update({
+      page_id: pageId,
+      icon: {
+        type: "external",
+        external: { url: r2Url },
+      },
     });
+
+    console.log(`[Site Icon] Updated ${pageId} → ${r2Url}`);
 
     return NextResponse.json(
       {
         success: true,
-        message: "Icon processing started",
-        pageId,
+        message: "Good website icon uploaded to R2 and updated successfully",
+        iconUrl: r2Url,
       },
-      { status: 202 },
+      { status: 200 },
     );
   } catch (error) {
     console.error("Error updating good website icon:", error);
