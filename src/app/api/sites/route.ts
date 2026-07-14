@@ -1,4 +1,6 @@
-import { cachedResponse, errorResponse } from "@/lib/api-utils";
+import { NextResponse } from "next/server";
+
+import { errorResponse } from "@/lib/api-utils";
 import { getGoodWebsites } from "@/lib/goodWebsites";
 
 export async function GET(request: Request) {
@@ -15,8 +17,13 @@ export async function GET(request: Request) {
       return tagMatch;
     });
 
-    // Cache for 5 minutes to match ISR revalidation
-    return cachedResponse(filteredItems, 300);
+    // No CDN/HTTP caching here: freshness is governed by `cachedNotionQuery`
+    // (Upstash + Next data cache) and the purge-cache endpoint. A separate
+    // `s-maxage` layer would serve a stale JSON snapshot that SWR then swaps in
+    // over the fresh server-rendered data, making new entries flash and vanish.
+    return NextResponse.json(filteredItems, {
+      headers: { "Cache-Control": "no-store" },
+    });
   } catch (error) {
     console.error("Error fetching good website items:", error);
     return errorResponse("Failed to fetch good website items");
