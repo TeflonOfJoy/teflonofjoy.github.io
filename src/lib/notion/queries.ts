@@ -3,6 +3,8 @@ import type {
   PageObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 
+import { getGoogleFaviconUrl } from "@/lib/utils/favicon";
+
 import { getAllBlocks } from "./blocks";
 import { CACHE_TTLS, cachedNotionQuery } from "./cache";
 import { notion } from "./client";
@@ -205,7 +207,7 @@ export async function getGoodWebsitesDatabaseItems(): Promise<GoodWebsiteItem[]>
             name: properties.Name?.title[0]?.plain_text || "Untitled",
             url: properties.URL?.url || undefined,
             x: properties.X?.url || undefined,
-            icon,
+            icon: icon || getGoogleFaviconUrl(properties.URL?.url),
             tags: properties.Tags?.multi_select.map((t) => t.name) || [],
             previewImage: properties["Preview Image"]?.url || undefined,
             previewImageDark: properties["Preview Image Dark"]?.url || undefined,
@@ -270,7 +272,7 @@ export async function getGoodWebsitesDatabaseItemsForRss(): Promise<GoodWebsiteI
             name: properties.Name?.title[0]?.plain_text || "Untitled",
             url: properties.URL?.url || undefined,
             x: properties.X?.url || undefined,
-            icon,
+            icon: icon || getGoogleFaviconUrl(properties.URL?.url),
             tags: properties.Tags?.multi_select.map((t) => t.name) || [],
             previewImage: properties["Preview Image"]?.url || undefined,
             previewImageDark: properties["Preview Image Dark"]?.url || undefined,

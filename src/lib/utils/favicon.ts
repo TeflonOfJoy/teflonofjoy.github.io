@@ -11,6 +11,22 @@ function isValidHttpUrl(iconUrl: string): boolean {
 }
 
 /**
+ * Build a favicon URL from Google's public favicon service for a site URL.
+ * Synchronous, no network call — used as a render-time fallback when a Notion
+ * page has no icon set, avoiding the R2 upload pipeline entirely.
+ * Returns undefined when the input URL is missing or malformed.
+ */
+export function getGoogleFaviconUrl(url?: string, size = 128): string | undefined {
+  if (!url) return undefined;
+  try {
+    const domain = new URL(url).hostname;
+    return `https://www.google.com/s2/favicons?sz=${size}&domain=${domain}`;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * Check if a URL is a base64 data URL
  */
 export function isDataUrl(iconUrl: string): boolean {
