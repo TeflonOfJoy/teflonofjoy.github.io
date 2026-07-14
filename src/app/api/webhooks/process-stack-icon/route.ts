@@ -7,7 +7,7 @@ import { invalidateNotionCache, notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
 import { downloadIconBuffer, fetchFaviconBuffer } from "@/lib/utils/favicon";
 import {
-  extractPageIdFromWebhookBody,
+  extractPageIdFromWebhookRequest,
   extractUrlFromWebhookBody,
 } from "@/lib/webhooks/notion-automation-payload";
 
@@ -48,8 +48,10 @@ export async function POST(request: Request) {
       return errorResponse("Unauthorized", 401);
     }
 
-    const body = await request.json();
-    const pageId = extractPageIdFromWebhookBody(body);
+    const rawBody = await request.text();
+    const body: unknown = rawBody ? JSON.parse(rawBody) : {};
+
+    const pageId = extractPageIdFromWebhookRequest(request.url, body);
     if (!pageId) {
       console.error("Missing page ID in webhook payload", body);
       return errorResponse("Missing page ID in webhook payload", 400);

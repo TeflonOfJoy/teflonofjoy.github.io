@@ -10,7 +10,7 @@ import { notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
 import { captureScreenshot } from "@/lib/screenshot";
 import {
-  extractPageIdFromWebhookBody,
+  extractPageIdFromWebhookRequest,
   extractUrlFromWebhookBody,
 } from "@/lib/webhooks/notion-automation-payload";
 
@@ -38,7 +38,8 @@ function extractUrlFromPage(page: PageObjectResponse): string | undefined {
  * Webhook endpoint to capture a website screenshot and store it in R2
  *
  * POST /api/webhooks/capture-site-preview
- * Notion automation payload: { data: { id, properties?: { URL } } }
+ * POST /api/webhooks/capture-site-preview?id=<page-id>
+ * Notion automation payload: { data: { id, properties?: { URL } } } or { entity: { id } }
  *
  * Flow:
  * 1. Extract page ID and URL from webhook payload or Notion page
@@ -57,9 +58,10 @@ export async function POST(request: Request) {
       return errorResponse("Unauthorized", 401);
     }
 
-    const body = await request.json();
+    const rawBody = await request.text();
+    const body: unknown = rawBody ? JSON.parse(rawBody) : {};
 
-    const pageId = extractPageIdFromWebhookBody(body);
+    const pageId = extractPageIdFromWebhookRequest(request.url, body);
     if (!pageId) {
       console.error("Missing page ID in webhook payload", body);
       return errorResponse("Missing page ID in webhook payload", 400);
