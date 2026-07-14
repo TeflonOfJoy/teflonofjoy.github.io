@@ -6,16 +6,10 @@ import { optimizeSiteIcon } from "@/lib/image-processing/optimize";
 import { invalidateNotionCache, notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
 import { downloadIconBuffer, fetchFaviconBuffer } from "@/lib/utils/favicon";
-
-function extractUrlFromPayload(urlProperty: unknown): string | undefined {
-  if (!urlProperty) return undefined;
-  if (typeof urlProperty === "string") return urlProperty;
-  if (typeof urlProperty === "object" && urlProperty !== null && "url" in urlProperty) {
-    const url = (urlProperty as { url?: string | null }).url;
-    return url ?? undefined;
-  }
-  return undefined;
-}
+import {
+  extractPageIdFromWebhookBody,
+  extractUrlFromWebhookBody,
+} from "@/lib/webhooks/notion-automation-payload";
 
 function getPageIconUrl(page: PageObjectResponse): string | undefined {
   if (!page.icon) return undefined;
@@ -55,14 +49,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const pageId = body.data?.id;
+    const pageId = extractPageIdFromWebhookBody(body);
     if (!pageId) {
-      console.error("Missing required field: data.id (pageId)", body);
-      return errorResponse("Missing required field: data.id (pageId)", 400);
+      console.error("Missing page ID in webhook payload", body);
+      return errorResponse("Missing page ID in webhook payload", 400);
     }
 
     const page = (await notion.pages.retrieve({ page_id: pageId })) as PageObjectResponse;
-    const siteUrl = extractUrlFromPayload(body.data?.properties?.URL) ?? getPageSiteUrl(page);
+    const siteUrl = extractUrlFromWebhookBody(body) ?? getPageSiteUrl(page);
 
     let iconBuffer: Buffer | null = null;
     let source = "unknown";

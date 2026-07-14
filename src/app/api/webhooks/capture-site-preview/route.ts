@@ -9,6 +9,10 @@ import { optimizeSitePreview } from "@/lib/image-processing/optimize";
 import { notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
 import { captureScreenshot } from "@/lib/screenshot";
+import {
+  extractPageIdFromWebhookBody,
+  extractUrlFromWebhookBody,
+} from "@/lib/webhooks/notion-automation-payload";
 
 // Screenshot + upload can exceed Vercel's default 10s limit.
 export const maxDuration = 60;
@@ -23,16 +27,6 @@ function pickExistingProperties(
   return Object.fromEntries(
     Object.entries(properties).filter(([name]) => name in available),
   ) as NotionUpdateProperties;
-}
-
-function extractUrlFromPayload(urlProperty: unknown): string | undefined {
-  if (!urlProperty) return undefined;
-  if (typeof urlProperty === "string") return urlProperty;
-  if (typeof urlProperty === "object" && urlProperty !== null && "url" in urlProperty) {
-    const url = (urlProperty as { url?: string | null }).url;
-    return url ?? undefined;
-  }
-  return undefined;
 }
 
 function extractUrlFromPage(page: PageObjectResponse): string | undefined {
@@ -65,18 +59,17 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const pageId = body.data?.id;
+    const pageId = extractPageIdFromWebhookBody(body);
     if (!pageId) {
-      console.error("Missing required field: data.id (pageId)", body);
-      return errorResponse("Missing required field: data.id (pageId)", 400);
+      console.error("Missing page ID in webhook payload", body);
+      return errorResponse("Missing page ID in webhook payload", 400);
     }
 
     const currentPage = (await notion.pages.retrieve({
       page_id: pageId,
     })) as PageObjectResponse;
 
-    const url =
-      extractUrlFromPayload(body.data?.properties?.URL) ?? extractUrlFromPage(currentPage);
+    const url = extractUrlFromWebhookBody(body) ?? extractUrlFromPage(currentPage);
     if (!url) {
       console.error("URL property is empty or invalid", body);
       return errorResponse("URL property is empty or invalid", 400);

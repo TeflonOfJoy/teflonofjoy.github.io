@@ -1,3 +1,4 @@
+import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { NextResponse } from "next/server";
 
 import { errorResponse } from "@/lib/api-utils";
@@ -5,6 +6,10 @@ import { optimizeSiteIcon } from "@/lib/image-processing/optimize";
 import { notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
 import { fetchFaviconBuffer } from "@/lib/utils/favicon";
+import {
+  extractPageIdFromWebhookBody,
+  extractUrlFromWebhookBody,
+} from "@/lib/webhooks/notion-automation-payload";
 
 /**
  * Webhook endpoint to fetch and upload good website favicon to R2
@@ -31,23 +36,16 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    // Extract page ID and URL from Notion webhook payload
-    const pageId = body.data?.id;
-    const urlProperty = body.data?.properties?.URL;
-
-    // Validate required fields
+    const pageId = extractPageIdFromWebhookBody(body);
     if (!pageId) {
-      console.error("Missing required field: data.id (pageId)", body);
-      return errorResponse("Missing required field: data.id (pageId)", 400);
+      console.error("Missing page ID in webhook payload", body);
+      return errorResponse("Missing page ID in webhook payload", 400);
     }
 
-    if (!urlProperty) {
-      console.error("Missing required field: data.properties.URL", body);
-      return errorResponse("Missing required field: data.properties.URL", 400);
-    }
-
-    // Extract URL from Notion property object
-    const url = typeof urlProperty === "string" ? urlProperty : urlProperty.url;
+    const page = (await notion.pages.retrieve({ page_id: pageId })) as PageObjectResponse;
+    const url =
+      extractUrlFromWebhookBody(body) ??
+      (page.properties.URL?.type === "url" ? (page.properties.URL.url ?? undefined) : undefined);
 
     if (!url) {
       console.error("URL property is empty or invalid", body);
