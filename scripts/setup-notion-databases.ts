@@ -59,7 +59,6 @@ const DATABASES: DatabaseDefinition[] = [
       "Preview Image": { url: {} },
       "Preview Image Dark": { url: {} },
       "Preview Status": PREVIEW_STATUS_OPTIONS,
-      Likes: { number: {} },
     },
   },
   {
@@ -74,7 +73,6 @@ const DATABASES: DatabaseDefinition[] = [
       "Preview Image": { url: {} },
       "Preview Image Dark": { url: {} },
       "Preview Status": PREVIEW_STATUS_OPTIONS,
-      Likes: { number: {} },
     },
   },
   {
@@ -85,7 +83,6 @@ const DATABASES: DatabaseDefinition[] = [
       Title: { title: {} },
       Published: { date: {} },
       "Short ID": { rich_text: {} },
-      Likes: { number: {} },
     },
   },
   {

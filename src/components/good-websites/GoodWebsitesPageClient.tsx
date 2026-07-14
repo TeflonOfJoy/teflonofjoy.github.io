@@ -4,23 +4,20 @@ import { useAtom } from "jotai";
 import Image from "next/image";
 import { useMemo, useState, useSyncExternalStore } from "react";
 
+import { sitesViewModeAtom } from "@/atoms/sitesViewMode";
 import {
   getNextTableSort,
   getTableSortDirection,
   sitesTableSortAtom,
-} from "@/atoms/likesSortOrder";
-import { sitesViewModeAtom } from "@/atoms/sitesViewMode";
+} from "@/atoms/tableSortOrder";
 import { GoodWebsiteGalleryItem } from "@/components/good-websites/GoodWebsiteGalleryItem";
 import { GoodWebsitesFilters } from "@/components/good-websites/GoodWebsitesFilters";
 import { ViewToggle } from "@/components/good-websites/ViewToggle";
-import { BatchLikesProvider } from "@/components/likes/BatchLikesProvider";
-import { LikeButton } from "@/components/likes/LikeButton";
 import { ListDetailWrapper } from "@/components/ListDetailWrapper";
 import { LoadingSpinner, PreviewCardProvider, PreviewCardTrigger } from "@/components/ui";
 import { TableSortHeader } from "@/components/ui/TableSortHeader";
 import type { GoodWebsiteItem } from "@/lib/goodWebsites";
 import { useGoodWebsites } from "@/lib/hooks/useGoodWebsites";
-import type { LikeData } from "@/lib/hooks/useLikes";
 
 import { Linked } from "../icons/Linked";
 import { XIcon } from "../icons/SocialIcons";
@@ -28,7 +25,6 @@ import { useTopBarActions } from "../TopBarActions";
 
 interface GoodWebsitesPageClientProps {
   initialData: GoodWebsiteItem[];
-  initialLikes?: Record<string, LikeData>;
 }
 
 // Hydration check using useSyncExternalStore to avoid layout flicker
@@ -37,27 +33,18 @@ const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 const textCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
-export function GoodWebsitesPageClient({ initialData, initialLikes }: GoodWebsitesPageClientProps) {
+export function GoodWebsitesPageClient({ initialData }: GoodWebsitesPageClientProps) {
   const { goodWebsites, isInitialLoading, isValidating, isError } = useGoodWebsites(initialData);
   const [viewMode, setViewMode] = useAtom(sitesViewModeAtom);
   const [tableSort, setTableSort] = useAtom(sitesTableSortAtom);
   const isHydrated = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  // Collect all page IDs for batch likes fetching
-  const pageIds = useMemo(() => goodWebsites.map((item) => item.id), [goodWebsites]);
   const sortedGoodWebsites = useMemo(() => {
     if (!tableSort.column || tableSort.direction === "none") {
       return goodWebsites;
     }
 
     return [...goodWebsites].sort((a, b) => {
-      if (tableSort.column === "likes") {
-        const likesA = initialLikes?.[a.id]?.count ?? 0;
-        const likesB = initialLikes?.[b.id]?.count ?? 0;
-
-        return tableSort.direction === "desc" ? likesB - likesA : likesA - likesB;
-      }
-
       if (tableSort.column === "name") {
         return tableSort.direction === "asc"
           ? textCollator.compare(a.name, b.name)
@@ -71,7 +58,7 @@ export function GoodWebsitesPageClient({ initialData, initialLikes }: GoodWebsit
         ? textCollator.compare(siteA, siteB)
         : textCollator.compare(siteB, siteA);
     });
-  }, [goodWebsites, initialLikes, tableSort]);
+  }, [goodWebsites, tableSort]);
 
   const topBarContent = useMemo(
     () => (
@@ -107,98 +94,85 @@ export function GoodWebsitesPageClient({ initialData, initialLikes }: GoodWebsit
   }
 
   return (
-    <BatchLikesProvider pageIds={pageIds} initialData={initialLikes}>
-      <PreviewCardProvider>
-        <ListDetailWrapper>
-          <div className="flex flex-1 flex-col overflow-hidden">
-            {/* Filters - mobile only */}
-            <div className="border-secondary flex items-center justify-between border-b p-4 md:hidden">
-              <ViewToggle view={viewMode} onChange={setViewMode} />
-              <GoodWebsitesFilters isLoading={isValidating && !isInitialLoading} />
-            </div>
+    <PreviewCardProvider>
+      <ListDetailWrapper>
+        <div className="flex flex-1 flex-col overflow-hidden">
+          {/* Filters - mobile only */}
+          <div className="border-secondary flex items-center justify-between border-b p-4 md:hidden">
+            <ViewToggle view={viewMode} onChange={setViewMode} />
+            <GoodWebsitesFilters isLoading={isValidating && !isInitialLoading} />
+          </div>
 
-            {/* Content */}
-            <div className="relative flex-1 overflow-auto">
-              {viewMode === "list" ? (
-                <>
-                  {/* Table Header - Sticky (hidden on mobile) */}
-                  <div className="bg-secondary border-secondary sticky top-0 z-20 hidden border-b md:block dark:bg-neutral-950">
-                    <div className="grid grid-cols-12 gap-4 px-4 py-2 font-medium">
-                      <div className="col-span-7 text-left">
-                        <TableSortHeader
-                          label="Name"
-                          direction={getTableSortDirection(tableSort, "name")}
-                          onToggle={() =>
-                            setTableSort((currentSort) =>
-                              getNextTableSort(currentSort, "name", "asc"),
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="col-span-3 text-left">
-                        <TableSortHeader
-                          label="Site"
-                          direction={getTableSortDirection(tableSort, "site")}
-                          onToggle={() =>
-                            setTableSort((currentSort) =>
-                              getNextTableSort(currentSort, "site", "asc"),
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="col-span-1" />
-                      <div className="col-span-1 text-left">
-                        <TableSortHeader
-                          label="Likes"
-                          direction={getTableSortDirection(tableSort, "likes")}
-                          onToggle={() =>
-                            setTableSort((currentSort) =>
-                              getNextTableSort(currentSort, "likes", "desc"),
-                            )
-                          }
-                        />
-                      </div>
+          {/* Content */}
+          <div className="relative flex-1 overflow-auto">
+            {viewMode === "list" ? (
+              <>
+                {/* Table Header - Sticky (hidden on mobile) */}
+                <div className="bg-secondary border-secondary sticky top-0 z-20 hidden border-b md:block dark:bg-neutral-950">
+                  <div className="grid grid-cols-12 gap-4 px-4 py-2 font-medium">
+                    <div className="col-span-7 text-left">
+                      <TableSortHeader
+                        label="Name"
+                        direction={getTableSortDirection(tableSort, "name")}
+                        onToggle={() =>
+                          setTableSort((currentSort) =>
+                            getNextTableSort(currentSort, "name", "asc"),
+                          )
+                        }
+                      />
                     </div>
+                    <div className="col-span-3 text-left">
+                      <TableSortHeader
+                        label="Site"
+                        direction={getTableSortDirection(tableSort, "site")}
+                        onToggle={() =>
+                          setTableSort((currentSort) =>
+                            getNextTableSort(currentSort, "site", "asc"),
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="col-span-1" />
                   </div>
+                </div>
 
-                  {/* Table Content */}
-                  <div
-                    className={`divide-secondary divide-y ${isValidating && !isInitialLoading ? "opacity-75 transition-opacity duration-200" : ""}`}
-                  >
-                    {sortedGoodWebsites.map((item) => (
-                      <GoodWebsiteItemComponent key={item.id} item={item} />
-                    ))}
-                  </div>
-                </>
-              ) : (
-                /* Gallery View */
+                {/* Table Content */}
                 <div
-                  className={`bg-tertiary grid grid-cols-1 gap-0.5 p-0.5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 dark:bg-transparent ${isValidating && !isInitialLoading ? "opacity-75 transition-opacity duration-200" : ""}`}
+                  className={`divide-secondary divide-y ${isValidating && !isInitialLoading ? "opacity-75 transition-opacity duration-200" : ""}`}
                 >
                   {sortedGoodWebsites.map((item) => (
-                    <GoodWebsiteGalleryItem key={item.id} item={item} />
+                    <GoodWebsiteItemComponent key={item.id} item={item} />
                   ))}
                 </div>
-              )}
+              </>
+            ) : (
+              /* Gallery View */
+              <div
+                className={`bg-tertiary grid grid-cols-1 gap-0.5 p-0.5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 dark:bg-transparent ${isValidating && !isInitialLoading ? "opacity-75 transition-opacity duration-200" : ""}`}
+              >
+                {sortedGoodWebsites.map((item) => (
+                  <GoodWebsiteGalleryItem key={item.id} item={item} />
+                ))}
+              </div>
+            )}
 
-              {/* Empty state */}
-              {goodWebsites.length === 0 && !isValidating && (
-                <div className="flex h-32 items-center justify-center">
-                  <div className="text-secondary">No good websites found</div>
-                </div>
-              )}
+            {/* Empty state */}
+            {goodWebsites.length === 0 && !isValidating && (
+              <div className="flex h-32 items-center justify-center">
+                <div className="text-secondary">No good websites found</div>
+              </div>
+            )}
 
-              {/* Loading state for empty results */}
-              {goodWebsites.length === 0 && isValidating && (
-                <div className="flex h-32 items-center justify-center">
-                  <div className="text-secondary">Loading good websites...</div>
-                </div>
-              )}
-            </div>
+            {/* Loading state for empty results */}
+            {goodWebsites.length === 0 && isValidating && (
+              <div className="flex h-32 items-center justify-center">
+                <div className="text-secondary">Loading good websites...</div>
+              </div>
+            )}
           </div>
-        </ListDetailWrapper>
-      </PreviewCardProvider>
-    </BatchLikesProvider>
+        </div>
+      </ListDetailWrapper>
+    </PreviewCardProvider>
   );
 }
 
@@ -276,11 +250,6 @@ function GoodWebsiteItemComponent({ item }: { item: GoodWebsiteItem }) {
         </div>
       </div>
 
-      {/* Like button - mobile only, positioned at start */}
-      <div className="flex-none self-center md:hidden" onClick={(e) => e.stopPropagation()}>
-        <LikeButton pageId={item.id} />
-      </div>
-
       {/* Good Website URL - desktop only */}
       <div className="hidden md:col-span-3 md:block">
         {item.url && <span className="text-tertiary truncate">{formatWebsiteUrl(item.url)}</span>}
@@ -298,11 +267,6 @@ function GoodWebsiteItemComponent({ item }: { item: GoodWebsiteItem }) {
             <XIcon size={16} />
           </a>
         )}
-      </div>
-
-      {/* Likes column - desktop only */}
-      <div className="hidden md:col-span-1 md:flex" onClick={(e) => e.stopPropagation()}>
-        <LikeButton pageId={item.id} />
       </div>
     </div>
   );

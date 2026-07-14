@@ -1,6 +1,6 @@
 "use client";
 
-import type { SortDirection } from "@/atoms/likesSortOrder";
+import type { SortDirection } from "@/atoms/tableSortOrder";
 import { ArrowDown } from "@/components/icons/ArrowDown";
 import { ArrowUp } from "@/components/icons/ArrowUp";
 import { cn } from "@/lib/utils";

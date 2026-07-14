@@ -7,8 +7,8 @@ interface TableSortState<TColumn extends string> {
   direction: SortDirection;
 }
 
-export type SitesTableSortColumn = "name" | "site" | "likes";
-export type StackTableSortColumn = "name" | "description" | "platforms" | "likes";
+export type SitesTableSortColumn = "name" | "site";
+export type StackTableSortColumn = "name" | "description" | "platforms";
 
 export type SitesTableSortState = TableSortState<SitesTableSortColumn>;
 export type StackTableSortState = TableSortState<StackTableSortColumn>;

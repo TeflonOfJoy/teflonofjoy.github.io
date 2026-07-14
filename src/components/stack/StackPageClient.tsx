@@ -9,15 +9,12 @@ import {
   getNextTableSort,
   getTableSortDirection,
   stackTableSortAtom,
-} from "@/atoms/likesSortOrder";
-import { BatchLikesProvider } from "@/components/likes/BatchLikesProvider";
-import { LikeButton } from "@/components/likes/LikeButton";
+} from "@/atoms/tableSortOrder";
 import { ListDetailWrapper } from "@/components/ListDetailWrapper";
 import { StackFilters } from "@/components/stack/StackFilters";
 import { LoadingSpinner, PreviewCardProvider, PreviewCardTrigger } from "@/components/ui";
 import { PlatformBadge } from "@/components/ui/PlatformBadge";
 import { TableSortHeader } from "@/components/ui/TableSortHeader";
-import type { LikeData } from "@/lib/hooks/useLikes";
 import { useStacks } from "@/lib/hooks/useStacks";
 import type { StackItem as StackItemType } from "@/lib/stack";
 
@@ -25,7 +22,6 @@ import { useTopBarActions } from "../TopBarActions";
 
 interface StackPageClientProps {
   initialData: StackItemType[];
-  initialLikes?: Record<string, LikeData>;
 }
 
 const subscribe = () => () => {};
@@ -33,7 +29,7 @@ const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 const textCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
-export function StackPageClient({ initialData, initialLikes }: StackPageClientProps) {
+export function StackPageClient({ initialData }: StackPageClientProps) {
   const { stacks, isInitialLoading, isValidating, isError } = useStacks(initialData);
   const [tableSort, setTableSort] = useAtom(stackTableSortAtom);
   const router = useRouter();
@@ -47,21 +43,12 @@ export function StackPageClient({ initialData, initialLikes }: StackPageClientPr
     router.push(`/stack?${params.toString()}`);
   };
 
-  // Collect all page IDs for batch likes fetching
-  const pageIds = useMemo(() => stacks.map((item) => item.id), [stacks]);
   const sortedStacks = useMemo(() => {
     if (!tableSort.column || tableSort.direction === "none") {
       return stacks;
     }
 
     return [...stacks].sort((a, b) => {
-      if (tableSort.column === "likes") {
-        const likesA = initialLikes?.[a.id]?.count ?? 0;
-        const likesB = initialLikes?.[b.id]?.count ?? 0;
-
-        return tableSort.direction === "desc" ? likesB - likesA : likesA - likesB;
-      }
-
       if (tableSort.column === "name") {
         return tableSort.direction === "asc"
           ? textCollator.compare(a.name, b.name)
@@ -84,7 +71,7 @@ export function StackPageClient({ initialData, initialLikes }: StackPageClientPr
         ? textCollator.compare(platformsA, platformsB)
         : textCollator.compare(platformsB, platformsA);
     });
-  }, [stacks, initialLikes, tableSort]);
+  }, [stacks, tableSort]);
 
   const topBarContent = useMemo(
     () => (
@@ -117,96 +104,83 @@ export function StackPageClient({ initialData, initialLikes }: StackPageClientPr
   }
 
   return (
-    <BatchLikesProvider pageIds={pageIds} initialData={initialLikes}>
-      <PreviewCardProvider>
-        <ListDetailWrapper>
-          <div className="flex flex-1 flex-col overflow-hidden">
-            {/* Filters */}
-            <div className="border-secondary flex border-b p-4 md:hidden">
-              <StackFilters isLoading={isValidating && !isInitialLoading} />
-            </div>
-
-            {/* Table */}
-            <div className="relative flex-1 overflow-auto">
-              {/* Table Header - Sticky (hidden on mobile) */}
-              <div className="bg-secondary border-secondary sticky top-0 z-10 hidden border-b md:block dark:bg-neutral-950">
-                <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium">
-                  <div className="col-span-3 text-left">
-                    <TableSortHeader
-                      label="Name"
-                      direction={getTableSortDirection(tableSort, "name")}
-                      onToggle={() =>
-                        setTableSort((currentSort) => getNextTableSort(currentSort, "name", "asc"))
-                      }
-                    />
-                  </div>
-                  <div className="col-span-5 text-left">
-                    <TableSortHeader
-                      label="Description"
-                      direction={getTableSortDirection(tableSort, "description")}
-                      onToggle={() =>
-                        setTableSort((currentSort) =>
-                          getNextTableSort(currentSort, "description", "asc"),
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="col-span-3 text-left">
-                    <TableSortHeader
-                      label="Platforms"
-                      direction={getTableSortDirection(tableSort, "platforms")}
-                      onToggle={() =>
-                        setTableSort((currentSort) =>
-                          getNextTableSort(currentSort, "platforms", "asc"),
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="col-span-1 text-left">
-                    <TableSortHeader
-                      label="Likes"
-                      direction={getTableSortDirection(tableSort, "likes")}
-                      onToggle={() =>
-                        setTableSort((currentSort) =>
-                          getNextTableSort(currentSort, "likes", "desc"),
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Table Content */}
-              <div
-                className={`divide-secondary divide-y ${isValidating && !isInitialLoading ? "opacity-75 transition-opacity duration-200" : ""}`}
-              >
-                {sortedStacks.map((item) => (
-                  <StackItemComponent
-                    key={item.id}
-                    item={item}
-                    onPlatformClick={handlePlatformFilter}
-                  />
-                ))}
-              </div>
-
-              {/* Empty state */}
-              {stacks.length === 0 && !isValidating && (
-                <div className="flex h-32 items-center justify-center">
-                  <div className="text-secondary">No stack items found</div>
-                </div>
-              )}
-
-              {/* Loading state for empty results during filter changes */}
-              {stacks.length === 0 && isValidating && (
-                <div className="flex h-32 items-center justify-center">
-                  <div className="text-secondary">Loading filtered results...</div>
-                </div>
-              )}
-            </div>
+    <PreviewCardProvider>
+      <ListDetailWrapper>
+        <div className="flex flex-1 flex-col overflow-hidden">
+          {/* Filters */}
+          <div className="border-secondary flex border-b p-4 md:hidden">
+            <StackFilters isLoading={isValidating && !isInitialLoading} />
           </div>
-        </ListDetailWrapper>
-      </PreviewCardProvider>
-    </BatchLikesProvider>
+
+          {/* Table */}
+          <div className="relative flex-1 overflow-auto">
+            {/* Table Header - Sticky (hidden on mobile) */}
+            <div className="bg-secondary border-secondary sticky top-0 z-10 hidden border-b md:block dark:bg-neutral-950">
+              <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium">
+                <div className="col-span-3 text-left">
+                  <TableSortHeader
+                    label="Name"
+                    direction={getTableSortDirection(tableSort, "name")}
+                    onToggle={() =>
+                      setTableSort((currentSort) => getNextTableSort(currentSort, "name", "asc"))
+                    }
+                  />
+                </div>
+                <div className="col-span-5 text-left">
+                  <TableSortHeader
+                    label="Description"
+                    direction={getTableSortDirection(tableSort, "description")}
+                    onToggle={() =>
+                      setTableSort((currentSort) =>
+                        getNextTableSort(currentSort, "description", "asc"),
+                      )
+                    }
+                  />
+                </div>
+                <div className="col-span-4 text-left">
+                  <TableSortHeader
+                    label="Platforms"
+                    direction={getTableSortDirection(tableSort, "platforms")}
+                    onToggle={() =>
+                      setTableSort((currentSort) =>
+                        getNextTableSort(currentSort, "platforms", "asc"),
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Table Content */}
+            <div
+              className={`divide-secondary divide-y ${isValidating && !isInitialLoading ? "opacity-75 transition-opacity duration-200" : ""}`}
+            >
+              {sortedStacks.map((item) => (
+                <StackItemComponent
+                  key={item.id}
+                  item={item}
+                  onPlatformClick={handlePlatformFilter}
+                />
+              ))}
+            </div>
+
+            {/* Empty state */}
+            {stacks.length === 0 && !isValidating && (
+              <div className="flex h-32 items-center justify-center">
+                <div className="text-secondary">No stack items found</div>
+              </div>
+            )}
+
+            {/* Loading state for empty results during filter changes */}
+            {stacks.length === 0 && isValidating && (
+              <div className="flex h-32 items-center justify-center">
+                <div className="text-secondary">Loading filtered results...</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </ListDetailWrapper>
+    </PreviewCardProvider>
   );
 }
 
@@ -288,16 +262,11 @@ function StackItemComponent({ item, onPlatformClick }: StackItemComponentProps) 
         </div>
       </div>
 
-      {/* Like button - mobile only, positioned at start */}
-      <div className="flex-none self-center md:hidden" onClick={(e) => e.stopPropagation()}>
-        <LikeButton pageId={item.id} />
-      </div>
-
       {/* Description column - desktop only */}
       <div className="text-tertiary hidden md:col-span-5 md:block">{item.description}</div>
 
       {/* Platforms column - desktop only */}
-      <div className="hidden flex-wrap gap-1 md:col-span-3 md:flex">
+      <div className="hidden flex-wrap gap-1 md:col-span-4 md:flex">
         {item.platforms?.map((platform) => (
           <PlatformBadge
             key={platform}
@@ -305,11 +274,6 @@ function StackItemComponent({ item, onPlatformClick }: StackItemComponentProps) 
             onClick={(e) => onPlatformClick(platform, e)}
           />
         ))}
-      </div>
-
-      {/* Likes column - desktop only */}
-      <div className="hidden md:col-span-1 md:block" onClick={(e) => e.stopPropagation()}>
-        <LikeButton pageId={item.id} />
       </div>
     </div>
   );

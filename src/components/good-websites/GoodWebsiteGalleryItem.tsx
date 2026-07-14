@@ -3,10 +3,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 
-import { LikeButton } from "@/components/likes/LikeButton";
 import { PlaceholderShader } from "@/components/ui/PlaceholderShader";
 import type { GoodWebsiteItem } from "@/lib/goodWebsites";
-import { useLikes } from "@/lib/hooks/useLikes";
 import { imageCache } from "@/lib/imageCache";
 
 interface GoodWebsiteGalleryItemProps {
@@ -27,7 +25,6 @@ export function GoodWebsiteGalleryItem({ item }: GoodWebsiteGalleryItemProps) {
     isCached ? "loaded" : "loading",
   );
   const [isHovered, setIsHovered] = useState(false);
-  const { hasLiked } = useLikes(item.id);
 
   // Preload image using Image API to avoid broken image flicker
   useEffect(() => {
@@ -97,28 +94,6 @@ export function GoodWebsiteGalleryItem({ item }: GoodWebsiteGalleryItemProps) {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-
-        {/* Like button - always visible on mobile, or when liked, otherwise animated on hover */}
-        <div className="absolute right-4 bottom-4" onClick={(e) => e.stopPropagation()}>
-          {/* Mobile: always visible */}
-          <div className="sm:hidden">
-            <LikeButton pageId={item.id} variant="ghost-light" />
-          </div>
-          {/* Desktop: permanently visible if liked, otherwise animated on hover */}
-          <div className="hidden sm:block">
-            {hasLiked ? (
-              <LikeButton pageId={item.id} variant="ghost-light" />
-            ) : (
-              <AnimatePresence>
-                {isHovered && (
-                  <motion.div {...hoverAnimationProps}>
-                    <LikeButton pageId={item.id} variant="ghost-light" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            )}
-          </div>
         </div>
       </div>
     </div>

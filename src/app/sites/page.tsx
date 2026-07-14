@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { GoodWebsitesPageClient } from "@/components/good-websites/GoodWebsitesPageClient";
 import { getGoodWebsites } from "@/lib/goodWebsites";
-import { getServerLikes } from "@/lib/likes-server";
 import { createMetadata, SITE_CONFIG } from "@/lib/metadata";
 
 export const metadata: Metadata = {
@@ -37,9 +36,5 @@ export default async function GoodWebsitesPage({
     return tagMatch;
   });
 
-  // Fetch likes for all items server-side
-  const pageIds = filteredWebsites.map((item) => item.id);
-  const initialLikes = await getServerLikes(pageIds);
-
-  return <GoodWebsitesPageClient initialData={filteredWebsites} initialLikes={initialLikes} />;
+  return <GoodWebsitesPageClient initialData={filteredWebsites} />;
 }

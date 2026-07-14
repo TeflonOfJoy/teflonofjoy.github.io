@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { BatchLikesProvider } from "@/components/likes/BatchLikesProvider";
-import { LikeButton } from "@/components/likes/LikeButton";
 import { renderBlocks } from "@/components/renderBlocks";
 import { PageTitle } from "@/components/Typography";
-import { getServerLikes } from "@/lib/likes-server";
 import { createArticleJsonLd, createMetadata, truncateDescription } from "@/lib/metadata";
 import { getTilByShortId } from "@/lib/notion";
 import { buildSlug, extractShortIdFromSlug } from "@/lib/short-id";
@@ -60,9 +57,6 @@ export default async function TilEntryPage(props: { params: Promise<{ slug: stri
 
   const canonicalSlug = content.shortId ? buildSlug(content.title, content.shortId) : slug;
 
-  // Fetch likes server-side
-  const initialLikes = await getServerLikes([content.id]);
-
   const cleanDate = new Date(content.published).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -93,11 +87,6 @@ export default async function TilEntryPage(props: { params: Promise<{ slug: stri
           <div className="notion-blocks flex min-w-0 flex-col gap-4 text-lg">
             {renderBlocks(content.blocks)}
           </div>
-          <BatchLikesProvider pageIds={[content.id]} initialData={initialLikes}>
-            <div className="w-fit">
-              <LikeButton pageId={content.id} />
-            </div>
-          </BatchLikesProvider>
         </div>
       </div>
     </>

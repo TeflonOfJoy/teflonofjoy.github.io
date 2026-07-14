@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { StackPageClient } from "@/components/stack/StackPageClient";
-import { getServerLikes } from "@/lib/likes-server";
 import { createMetadata, SITE_CONFIG } from "@/lib/metadata";
 import { getStacks } from "@/lib/stack";
 
@@ -42,9 +41,5 @@ export default async function StackPage({
     return statusMatch && platformMatch;
   });
 
-  // Fetch likes for all items server-side
-  const pageIds = filteredStacks.map((item) => item.id);
-  const initialLikes = await getServerLikes(pageIds);
-
-  return <StackPageClient initialData={filteredStacks} initialLikes={initialLikes} />;
+  return <StackPageClient initialData={filteredStacks} />;
 }

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { TilFeed } from "@/components/TilFeed";
 import { PageTitle } from "@/components/Typography";
-import { getServerLikes } from "@/lib/likes-server";
 import { createMetadata, SITE_CONFIG } from "@/lib/metadata";
 import { getTilDatabaseItems } from "@/lib/notion";
 import { getTilEntriesWithContent } from "@/lib/til";
@@ -26,12 +25,8 @@ export default async function TilPage() {
   // Fetch the first 10 entries for SSR
   const { items: initialEntries } = await getTilDatabaseItems(undefined, 10);
 
-  // Fetch content (blocks) and likes for the initial entries in parallel
-  const pageIds = initialEntries.map((entry) => entry.id);
-  const [initialEntriesWithContent, initialLikes] = await Promise.all([
-    getTilEntriesWithContent(initialEntries),
-    getServerLikes(pageIds),
-  ]);
+  // Fetch content (blocks) for the initial entries
+  const initialEntriesWithContent = await getTilEntriesWithContent(initialEntries);
 
   return (
     <div data-scrollable className="flex-1 overflow-y-auto">
@@ -41,7 +36,7 @@ export default async function TilPage() {
           <div className="hidden sm:block" />
           <PageTitle>TIL</PageTitle>
         </div>
-        <TilFeed initialEntries={initialEntriesWithContent} initialLikes={initialLikes} />
+        <TilFeed initialEntries={initialEntriesWithContent} />
       </div>
     </div>
   );

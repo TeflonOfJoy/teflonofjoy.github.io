@@ -1,22 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import useSWR from "swr";
 
 import { InfiniteScrollList } from "@/components/InfiniteScrollList";
-import { BatchLikesProvider } from "@/components/likes/BatchLikesProvider";
-import { LikeButton } from "@/components/likes/LikeButton";
 import { renderBlocks } from "@/components/renderBlocks";
 import { fetcher } from "@/lib/fetcher";
-import type { LikeData } from "@/lib/hooks/useLikes";
 import type { NotionTilItem, NotionTilItemWithContent } from "@/lib/notion";
 import { buildSlug } from "@/lib/short-id";
 import { useTilEntries } from "@/lib/til";
 
 interface TilFeedProps {
   initialEntries: NotionTilItemWithContent[];
-  initialLikes?: Record<string, LikeData>;
 }
 
 function formatDate(dateString: string) {
@@ -62,10 +58,6 @@ function TilEntry({
       {/* Date column */}
       <div className="flex flex-col md:items-end">
         <div className="text-tertiary text-base">{formatDate(entry.published)}</div>
-        {/* Like button - visible on sm+ screens */}
-        <div className="mt-3 hidden sm:block">
-          <LikeButton pageId={entry.id} />
-        </div>
       </div>
 
       {/* Content column */}
@@ -88,17 +80,12 @@ function TilEntry({
         ) : (
           <TilEntryContent entryId={entry.id} />
         )}
-
-        {/* Like button - visible only on mobile, below content */}
-        <div className="mt-1 w-fit sm:hidden">
-          <LikeButton pageId={entry.id} />
-        </div>
       </div>
     </article>
   );
 }
 
-export function TilFeed({ initialEntries, initialLikes }: TilFeedProps) {
+export function TilFeed({ initialEntries }: TilFeedProps) {
   const { items, isLoading, isLoadingMore, isReachingEnd, setSize, size } = useTilEntries();
 
   // Build a map of initial content for quick lookup
@@ -109,27 +96,22 @@ export function TilFeed({ initialEntries, initialLikes }: TilFeedProps) {
   // Use API-fetched items if available, otherwise fall back to initial entries
   const entries = items.length > 0 ? items : initialEntries;
 
-  // Collect all page IDs for batch likes fetching
-  const pageIds = useMemo(() => entries.map((entry) => entry.id), [entries]);
-
   const loadMore = useCallback(async () => {
     await setSize(size + 1);
   }, [setSize, size]);
 
   return (
-    <BatchLikesProvider pageIds={pageIds} initialData={initialLikes}>
-      <InfiniteScrollList
-        as="div"
-        items={entries}
-        renderItem={(entry) => (
-          <TilEntry key={entry.id} entry={entry} initialContent={initialContentMap.get(entry.id)} />
-        )}
-        onLoadMore={loadMore}
-        isLoading={isLoading ?? false}
-        isLoadingMore={isLoadingMore ?? false}
-        isReachingEnd={isReachingEnd ?? false}
-        className="flex flex-col gap-12 px-4"
-      />
-    </BatchLikesProvider>
+    <InfiniteScrollList
+      as="div"
+      items={entries}
+      renderItem={(entry) => (
+        <TilEntry key={entry.id} entry={entry} initialContent={initialContentMap.get(entry.id)} />
+      )}
+      onLoadMore={loadMore}
+      isLoading={isLoading ?? false}
+      isLoadingMore={isLoadingMore ?? false}
+      isReachingEnd={isReachingEnd ?? false}
+      className="flex flex-col gap-12 px-4"
+    />
   );
 }

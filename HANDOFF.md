@@ -9,7 +9,7 @@ deploy is working (GitHub Git webhook already connected).
 - **Notion-backed sections kept**: Home, About, **Stack**, **Sites**, **TIL**, **Book Digest**.
   Plus `/numbers` (static, standalone).
 - **Removed**: Hacker News / AMA / internal Writing, **Listening** (+ Spotify/Music),
-  **Speaking** (from About), **Design Details**.
+  **Speaking** (from About), **Design Details**, **Likes**.
 - **Transformed**: the former "App Dissection" section is now **Book Digest**
   (`/book-digest`, `/book-digest/[slug]`, `/book-digest/rss.xml`).
 - Unused deps removed (`fathom-client`, `postmark`, `jsonwebtoken`, `botid`). Package renamed
@@ -52,9 +52,8 @@ Speaking `39dc3041-4385-81ac-83ab-da00e088d17f`, Design Details
 1. **Vercel env**: ensure `NOTION_TOKEN` + the 4 in-use DB IDs; **remove**
    `NOTION_APP_DISSECTION_DATABASE_ID`, `NOTION_SPEAKING_DATABASE_ID`,
    `NOTION_MUSIC_DATABASE_ID`, `NOTION_DESIGN_DETAILS_EPISODES_DATABASE_ID`.
-2. **Likes** (Upstash Redis): `UPSTASH_LIKES_REST_URL` / `UPSTASH_LIKES_REST_TOKEN` +
-   `LIKES_HASH_SALT` (required in prod, else like endpoints 500). Optional cache:
-   `UPSTASH_NOTION_CACHE_REST_URL` / `UPSTASH_NOTION_CACHE_REST_TOKEN`.
+2. **Notion cache** (optional Upstash Redis): `UPSTASH_NOTION_CACHE_REST_URL` /
+   `UPSTASH_NOTION_CACHE_REST_TOKEN`.
 3. **Book covers**: if using **external URLs** (Open Library/Goodreads), add the host to
    `next.config.ts` → `images.remotePatterns`, otherwise `next/image` throws. Covers
    **uploaded to Notion** (page icon/file) already work.
