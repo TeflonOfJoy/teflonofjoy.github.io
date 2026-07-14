@@ -45,13 +45,12 @@ Webhook endpoints called by Notion database automations (button properties). All
 - `/api/webhooks/process-stack-icon` — Optimizes existing stack page icons to R2
 - `/api/webhooks/update-site-icon` — Fetches and optimizes favicons for good websites
 
-**Notion automation setup**:
+  Capture button — add two Send webhook actions (order matters):
 
-1. Add a button property to the database
-2. Configure action: "Send webhook"
-3. URL: `https://yoursite.com/api/webhooks/<endpoint>`
-4. Add header: `x-webhook-secret: <your-secret>`
-5. Body template: `{ "data": { "id": "{{id}}" } }` (or include properties as needed)
+  1. Send webhook → https://www.teflonofjoy.dev/api/webhooks/update-site-icon
+  2. Send webhook → https://www.teflonofjoy.dev/api/webhooks/capture-site-preview
+
+  Both use header: x-webhook-secret: <NOTION_WEBHOOK_VERIFICATION_SECRET>
 
 ## Migration Scripts
 

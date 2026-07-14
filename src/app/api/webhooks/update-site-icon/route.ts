@@ -5,7 +5,7 @@ import { errorResponse } from "@/lib/api-utils";
 import { optimizeSiteIcon } from "@/lib/image-processing/optimize";
 import { notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
-import { fetchFaviconBuffer } from "@/lib/utils/favicon";
+import { downloadIconBuffer, fetchFaviconBuffer, getGoogleFaviconUrl } from "@/lib/utils/favicon";
 import {
   extractPageIdFromWebhookRequest,
   extractUrlFromWebhookBody,
@@ -14,8 +14,8 @@ import {
 /**
  * Webhook endpoint to fetch and upload good website favicon to R2
  *
- * POST /api/webhooks/update-good-website-icon
- * Notion automation payload: { data: { id, properties: { URL } } }
+ * POST /api/webhooks/update-site-icon
+ * Notion automation payload: same as capture-site-preview (`data.id` from button clicks)
  *
  * Flow:
  * 1. Extract page ID and URL from Notion webhook
@@ -61,13 +61,19 @@ export async function POST(request: Request) {
       return errorResponse("Invalid URL format", 400);
     }
 
-    const faviconBuffer = await fetchFaviconBuffer(url);
+    // Fetch favicon from URL (falls back to Google's favicon service)
+    let faviconBuffer = await fetchFaviconBuffer(url);
+    if (!faviconBuffer) {
+      const googleFaviconUrl = getGoogleFaviconUrl(url, 128);
+      if (googleFaviconUrl) {
+        faviconBuffer = await downloadIconBuffer(googleFaviconUrl);
+      }
+    }
     if (!faviconBuffer) {
       console.error("Failed to fetch favicon", url, body);
       return errorResponse("Failed to fetch favicon", 500);
     }
 
-    // Step 3: Optimize the favicon (resize to max 80x80px, compress)
     const optimized = await optimizeSiteIcon(faviconBuffer);
 
     console.log(
