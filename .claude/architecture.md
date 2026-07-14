@@ -2,7 +2,7 @@
 
 ## Data Layer
 
-**Notion as CMS**: All content (stack, sites, TIL, book digest, design details) lives in separate Notion databases.
+**Notion as CMS**: All content (stack, sites, TIL, book digest) lives in separate Notion databases.
 
 **Schema generation**: TypeScript schemas are auto-generated from Notion database properties via `generateNotionSchemas.ts`. The dev server runs this automatically on startup.
 

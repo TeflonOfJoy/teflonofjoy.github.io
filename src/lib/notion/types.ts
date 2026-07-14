@@ -11,8 +11,6 @@ import type {
 
 // Re-export generated Zod schemas and types
 export {
-  type DesignDetailsEpisodes,
-  DesignDetailsEpisodesSchema,
   type GoodWebsites,
   GoodWebsitesSchema,
   type Stack,
@@ -120,18 +118,6 @@ export type GoodWebsiteItem = {
 // Good Website item type with date for RSS feed
 export type GoodWebsiteItemWithDate = GoodWebsiteItem & {
   createdTime: string;
-};
-
-// Design Details episode item type
-export type NotionDesignDetailsEpisodeItem = {
-  id: string;
-  title: string;
-  slug: string;
-  description?: string;
-  episodeNumber?: number;
-  publishedDate?: string;
-  imageUrl?: string;
-  audioUrl?: string;
 };
 
 // TIL item type

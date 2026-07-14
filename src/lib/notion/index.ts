@@ -7,10 +7,8 @@ export type {
   BlockObjectResponse,
   // Zod schemas and types
   DatabaseObjectResponse,
-  DesignDetailsEpisodes,
   GoodWebsiteItem,
   GoodWebsiteItemWithDate,
-  NotionDesignDetailsEpisodeItem,
   NotionItem,
   NotionStackItem,
   NotionTilItem,
@@ -28,7 +26,7 @@ export type {
 } from "./types";
 
 // Zod schemas
-export { DesignDetailsEpisodesSchema, StackSchema, TILSchema } from "./types";
+export { StackSchema, TILSchema } from "./types";
 
 // Type guards and utilities
 export { extractPlainText, hasProperties, isBlockObjectResponse } from "./types";
@@ -38,8 +36,6 @@ export { getAllBlocks, processBlockFromResponse } from "./blocks";
 
 // Queries
 export {
-  // Design Details
-  getDesignDetailsEpisodeDatabaseItems,
   // Generic
   getFullContent,
   // Good Websites

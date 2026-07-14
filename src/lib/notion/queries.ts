@@ -14,7 +14,6 @@ import {
   isValidBookDigestMedia,
   type NotionBookDigestItem,
   type NotionBookDigestItemWithContent,
-  type NotionDesignDetailsEpisodeItem,
   type NotionItem,
   type NotionStackItem,
   type NotionTilItem,
@@ -287,66 +286,6 @@ export async function getGoodWebsitesDatabaseItemsForRss(): Promise<GoodWebsiteI
         .filter((item): item is GoodWebsiteItemWithDate => item !== null);
 
       return items;
-    },
-    { ttl: CACHE_TTLS.LIST },
-  );
-}
-
-// ===== Design Details Episodes Database =====
-
-export async function getDesignDetailsEpisodeDatabaseItems(
-  cursor?: string,
-  pageSize: number = 20,
-): Promise<{ items: NotionDesignDetailsEpisodeItem[]; nextCursor: string | null }> {
-  return cachedNotionQuery(
-    `notion:design-details:list:${cursor || "start"}:${pageSize}`,
-    async () => {
-      const databaseId = process.env.NOTION_DESIGN_DETAILS_EPISODES_DATABASE_ID || "";
-      const dataSourceId = await getDataSourceId(databaseId);
-      const response = await notion.dataSources.query({
-        data_source_id: dataSourceId,
-        page_size: pageSize,
-        ...(cursor ? { start_cursor: cursor } : {}),
-        sorts: [
-          {
-            property: "Episode Number",
-            direction: "descending",
-          },
-        ],
-      });
-
-      const items = response.results
-        .map((page) => {
-          if (!hasProperties(page)) return null;
-
-          const pageWithProps = page as PageObjectResponse;
-          const properties = pageWithProps.properties as {
-            Name?: { title: { plain_text: string }[] };
-            Slug?: { rich_text: { plain_text: string }[] };
-            Description?: { rich_text: { plain_text: string }[] };
-            "Episode Number"?: { number: number };
-            "Published Date"?: { date: { start: string } | null };
-            "Image URL"?: { url: string };
-            "Audio URL (S3)"?: { url: string };
-          };
-
-          return {
-            id: pageWithProps.id,
-            title: properties.Name?.title[0]?.plain_text || "Untitled",
-            slug: properties.Slug?.rich_text[0]?.plain_text || "",
-            description: properties.Description?.rich_text[0]?.plain_text || undefined,
-            episodeNumber: properties["Episode Number"]?.number || undefined,
-            publishedDate: properties["Published Date"]?.date?.start || undefined,
-            imageUrl: properties["Image URL"]?.url || undefined,
-            audioUrl: properties["Audio URL (S3)"]?.url || undefined,
-          } as NotionDesignDetailsEpisodeItem;
-        })
-        .filter((item): item is NotionDesignDetailsEpisodeItem => item !== null);
-
-      return {
-        items,
-        nextCursor: response.has_more ? (response.next_cursor as string) : null,
-      };
     },
     { ttl: CACHE_TTLS.LIST },
   );

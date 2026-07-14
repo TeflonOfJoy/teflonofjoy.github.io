@@ -108,10 +108,6 @@ type DatabaseConfig = {
 async function generateSchemas() {
   const databases: DatabaseConfig[] = [
     { varName: "Stack", id: process.env.NOTION_STACK_DATABASE_ID },
-    {
-      varName: "DesignDetailsEpisodes",
-      id: process.env.NOTION_DESIGN_DETAILS_EPISODES_DATABASE_ID,
-    },
     { varName: "GoodWebsites", id: process.env.NOTION_GOOD_WEBSITES_DATABASE_ID },
     { varName: "TIL", id: process.env.NOTION_TIL_DATABASE_ID },
   ];

@@ -36,4 +36,3 @@ jobs:
           # Real values are configured in Vercel for production.
           NOTION_TOKEN: "build-placeholder"
           NOTION_STACK_DATABASE_ID: "build-placeholder"
-          NOTION_DESIGN_DETAILS_EPISODES_DATABASE_ID: "build-placeholder"

@@ -78,19 +78,6 @@ const DATABASES: DatabaseDefinition[] = [
     },
   },
   {
-    title: "Design Details Episodes",
-    envKey: "NOTION_DESIGN_DETAILS_EPISODES_DATABASE_ID",
-    properties: {
-      Name: { title: {} },
-      Slug: { rich_text: {} },
-      Description: { rich_text: {} },
-      "Episode Number": { number: {} },
-      "Published Date": { date: {} },
-      "Image URL": { url: {} },
-      "Audio URL (S3)": { url: {} },
-    },
-  },
-  {
     title: "TIL",
     envKey: "NOTION_TIL_DATABASE_ID",
     properties: {
