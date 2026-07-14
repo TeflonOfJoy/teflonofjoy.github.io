@@ -1,15 +1,19 @@
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { after } from "next/server";
 import { NextResponse } from "next/server";
 
 import { errorResponse } from "@/lib/api-utils";
 import { optimizeSiteIcon } from "@/lib/image-processing/optimize";
 import { notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
-import { downloadIconBuffer, fetchFaviconBuffer, getGoogleFaviconUrl } from "@/lib/utils/favicon";
+import { fetchWebhookFaviconBuffer } from "@/lib/utils/favicon";
 import {
   extractPageIdFromWebhookRequest,
   extractUrlFromWebhookBody,
 } from "@/lib/webhooks/notion-automation-payload";
+
+// Icon upload can run in the background after the 202 response.
+export const maxDuration = 60;
 
 /**
  * Webhook endpoint to fetch and upload good website favicon to R2
@@ -17,17 +21,10 @@ import {
  * POST /api/webhooks/update-site-icon
  * Notion automation payload: same as capture-site-preview (`data.id` from button clicks)
  *
- * Flow:
- * 1. Extract page ID and URL from Notion webhook
- * 2. Fetch favicon from URL
- * 3. Download favicon as buffer
- * 4. Optimize favicon (resize to max 80x80px, compress)
- * 5. Upload to R2 storage
- * 6. Update Notion page icon with R2 URL
+ * Returns 202 immediately — Notion times out webhook calls after ~5 seconds.
  */
 export async function POST(request: Request) {
   try {
-    // Verify webhook secret
     const webhookSecret = process.env.NOTION_WEBHOOK_VERIFICATION_SECRET;
     const providedSecret = request.headers.get("x-webhook-secret");
     if (!webhookSecret || providedSecret !== webhookSecret) {
@@ -53,7 +50,6 @@ export async function POST(request: Request) {
       return errorResponse("URL property is empty or invalid", 400);
     }
 
-    // Validate URL format
     try {
       new URL(url);
     } catch {
@@ -61,47 +57,45 @@ export async function POST(request: Request) {
       return errorResponse("Invalid URL format", 400);
     }
 
-    // Fetch favicon from URL (falls back to Google's favicon service)
-    let faviconBuffer = await fetchFaviconBuffer(url);
-    if (!faviconBuffer) {
-      const googleFaviconUrl = getGoogleFaviconUrl(url, 128);
-      if (googleFaviconUrl) {
-        faviconBuffer = await downloadIconBuffer(googleFaviconUrl);
+    after(async () => {
+      try {
+        const faviconBuffer = await fetchWebhookFaviconBuffer(url);
+        if (!faviconBuffer) {
+          console.error("Failed to fetch favicon for webhook", url, pageId);
+          return;
+        }
+
+        const optimized = await optimizeSiteIcon(faviconBuffer);
+        console.log(
+          `[Site Icon] Optimized ${pageId}: ${optimized.width}x${optimized.height}, ${(optimized.optimizedSize / 1024).toFixed(2)}KB`,
+        );
+
+        const r2Url = await uploadBufferToR2(optimized.buffer, optimized.contentType);
+
+        await notion.pages.update({
+          page_id: pageId,
+          icon: {
+            type: "external",
+            external: { url: r2Url },
+          },
+        });
+
+        console.log(`[Site Icon] Updated ${pageId} → ${r2Url}`);
+      } catch (error) {
+        console.error(`[Site Icon] Background job failed for ${pageId}:`, error);
       }
-    }
-    if (!faviconBuffer) {
-      console.error("Failed to fetch favicon", url, body);
-      return errorResponse("Failed to fetch favicon", 500);
-    }
-
-    const optimized = await optimizeSiteIcon(faviconBuffer);
-
-    console.log(
-      `Optimized favicon: ${optimized.width}x${optimized.height}, ${(optimized.optimizedSize / 1024).toFixed(2)}KB (saved ${optimized.savings.toFixed(1)}%)`,
-    );
-
-    // Step 4: Upload optimized favicon to R2
-    const r2Url = await uploadBufferToR2(optimized.buffer, optimized.contentType);
-
-    // Step 5: Update Notion page icon with R2 URL
-    await notion.pages.update({
-      page_id: pageId,
-      icon: {
-        type: "external",
-        external: { url: r2Url },
-      },
     });
 
     return NextResponse.json(
       {
         success: true,
-        message: "Good website icon uploaded to R2 and updated successfully",
-        iconUrl: r2Url,
+        message: "Icon processing started",
+        pageId,
       },
-      { status: 200 },
+      { status: 202 },
     );
   } catch (error) {
-    console.error("Error updating good website icon", error);
+    console.error("Error updating good website icon:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return errorResponse(`Failed to update good website icon: ${errorMessage}`, 500, error);
   }

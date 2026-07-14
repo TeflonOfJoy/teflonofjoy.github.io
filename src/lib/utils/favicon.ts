@@ -19,8 +19,10 @@ function isValidHttpUrl(iconUrl: string): boolean {
 export function getGoogleFaviconUrl(url?: string, size = 128): string | undefined {
   if (!url) return undefined;
   try {
-    const domain = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?sz=${size}&domain=${domain}`;
+    const candidates = getFaviconHostCandidates(url);
+    const hostname = candidates.find((host, index) => index > 0) ?? candidates[0];
+    if (!hostname) return undefined;
+    return `https://www.google.com/s2/favicons?sz=${size}&domain=${hostname}`;
   } catch {
     return undefined;
   }
@@ -321,13 +323,63 @@ export async function getBestFaviconUrl(url: string): Promise<string> {
     // Silent failure, will use fallback
   }
 
-  // Fallback to Google's favicon service
+  // Fallback to Google's favicon service (try parent domain for subdomains)
+  for (const hostname of getFaviconHostCandidates(url)) {
+    const googleFaviconUrl = `https://www.google.com/s2/favicons?sz=128&domain=${hostname}`;
+    const buffer = await downloadIconBuffer(googleFaviconUrl);
+    if (buffer) return googleFaviconUrl;
+  }
+
   try {
-    const domain = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
+    const hostname = getFaviconHostCandidates(url)[0];
+    return `https://www.google.com/s2/favicons?sz=128&domain=${hostname ?? "example.com"}`;
   } catch {
     return "https://www.google.com/s2/favicons?sz=128&domain=example.com";
   }
+}
+
+/**
+ * Hostnames to try when resolving a favicon (subdomains often block bots or lack
+ * Google favicon entries — e.g. wiki.librarything.com returns 403 and Google 404).
+ */
+function getFaviconHostCandidates(siteUrl: string): string[] {
+  try {
+    const hostname = new URL(siteUrl).hostname.toLowerCase();
+    const candidates: string[] = [];
+    const add = (host: string) => {
+      const normalized = host.replace(/^www\./, "");
+      if (normalized && !candidates.includes(normalized)) {
+        candidates.push(normalized);
+      }
+    };
+
+    add(hostname);
+
+    const bare = hostname.replace(/^www\./, "");
+    for (const prefix of ["wiki.", "blog.", "m.", "docs.", "app.", "forum."]) {
+      if (bare.startsWith(prefix)) {
+        add(bare.slice(prefix.length));
+      }
+    }
+
+    const parts = bare.split(".");
+    if (parts.length > 2) {
+      add(parts.slice(-2).join("."));
+    }
+
+    return candidates;
+  } catch {
+    return [];
+  }
+}
+
+async function downloadGoogleFaviconBuffer(siteUrl: string, size = 128): Promise<Buffer | null> {
+  for (const hostname of getFaviconHostCandidates(siteUrl)) {
+    const googleFaviconUrl = `https://www.google.com/s2/favicons?sz=${size}&domain=${hostname}`;
+    const buffer = await downloadIconBuffer(googleFaviconUrl);
+    if (buffer) return buffer;
+  }
+  return null;
 }
 
 /**
@@ -352,9 +404,24 @@ export async function downloadIconBuffer(iconUrl: string): Promise<Buffer | null
 }
 
 /**
+ * Fast favicon fetch for Notion button webhooks.
+ * Skips slow HTML scraping — Notion times out webhook calls after ~5 seconds.
+ */
+export async function fetchWebhookFaviconBuffer(siteUrl: string): Promise<Buffer | null> {
+  return downloadGoogleFaviconBuffer(siteUrl, 128);
+}
+
+/**
  * Resolve and download the best favicon for a site URL.
  */
 export async function fetchFaviconBuffer(siteUrl: string): Promise<Buffer | null> {
-  const iconUrl = await getBestFaviconUrl(siteUrl);
-  return downloadIconBuffer(iconUrl);
+  try {
+    const iconUrl = await getBestFaviconUrl(siteUrl);
+    const buffer = await downloadIconBuffer(iconUrl);
+    if (buffer) return buffer;
+  } catch {
+    // Fall through to Google candidates
+  }
+
+  return downloadGoogleFaviconBuffer(siteUrl, 128);
 }
