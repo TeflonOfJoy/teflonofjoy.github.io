@@ -28,7 +28,7 @@ const projects = [
   {
     name: "Sites",
     href: "/sites",
-    description: "A curated list of well-designed websites",
+    description: "A curated list of interesting websites",
     external: false,
   },
 ];
