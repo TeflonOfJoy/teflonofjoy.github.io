@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "generate-schemas": "bun scripts/generateNotionSchemas.ts",
+    "setup-notion-databases": "bun scripts/setup-notion-databases.ts",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
