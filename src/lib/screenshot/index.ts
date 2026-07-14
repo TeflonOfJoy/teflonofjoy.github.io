@@ -13,7 +13,7 @@ const SETTLE_DELAY = 1500; // Wait for animations/transitions to settle
 // Vercel/Lambda: Chromium binaries are downloaded at runtime from this pack URL.
 const CHROMIUM_PACK_URL =
   process.env.CHROMIUM_REMOTE_EXEC_PATH ??
-  "https://github.com/Sparticuz/chromium/releases/download/v143.0.0/chromium-v143.0.0-pack.tar";
+  "https://github.com/Sparticuz/chromium/releases/download/v143.0.0/chromium-v143.0.0-pack.x64.tar";
 
 // Check if running in serverless environment
 const IS_SERVERLESS = !!process.env.AWS_LAMBDA_FUNCTION_NAME || !!process.env.VERCEL;
