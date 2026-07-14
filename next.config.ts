@@ -1,4 +1,3 @@
-import { withBotId } from "botid/next/config";
 import type { NextConfig } from "next";
 import path from "path";
 
@@ -6,11 +5,6 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@sparticuz/chromium"],
   async redirects() {
     return [
-      {
-        source: "/writing/:path(rss|RSS|Rss|feed|Feed)",
-        destination: "/writing/rss.xml",
-        permanent: true,
-      },
       {
         source: "/til/:path(rss|RSS|Rss|feed|Feed)",
         destination: "/til/rss.xml",
@@ -22,11 +16,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/ama/:path(rss|RSS|Rss|feed|Feed)",
-        destination: "/ama/rss.xml",
-        permanent: true,
-      },
-      {
         source: "/app-dissection/:path(rss|RSS|Rss|feed|Feed)",
         destination: "/app-dissection/rss.xml",
         permanent: true,
@@ -34,11 +23,6 @@ const nextConfig: NextConfig = {
       {
         source: "/stack/:path(rss|RSS|Rss|feed|Feed)",
         destination: "/stack/rss.xml",
-        permanent: true,
-      },
-      {
-        source: "/api/hn/unsubscribe",
-        destination: "/api/hn-digest/unsubscribe",
         permanent: true,
       },
     ];
@@ -76,4 +60,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withBotId(nextConfig);
+export default nextConfig;

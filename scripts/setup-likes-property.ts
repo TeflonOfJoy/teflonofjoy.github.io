@@ -6,8 +6,6 @@
 const DATABASES = [
   { name: "Stack", envKey: "NOTION_STACK_DATABASE_ID" },
   { name: "Good Websites", envKey: "NOTION_GOOD_WEBSITES_DATABASE_ID" },
-  { name: "Writing", envKey: "NOTION_WRITING_DATABASE_ID" },
-  { name: "AMA", envKey: "NOTION_AMA_DATABASE_ID" },
   { name: "TIL", envKey: "NOTION_TIL_DATABASE_ID" },
 ];
 

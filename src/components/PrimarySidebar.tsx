@@ -154,13 +154,13 @@ function SidebarHeader() {
       <Link href="/" className="flex items-center gap-2 px-2 py-1">
         <Image
           src="/img/avatar.jpg"
-          alt="Brian Lovin"
+          alt="TeflonOfJoy"
           width={40}
           height={40}
           className="h-5 w-5 rounded-full"
           draggable={false}
         />
-        <span className="text-sm font-medium">Brian Lovin</span>
+        <span className="text-sm font-medium">TeflonOfJoy</span>
       </Link>
 
       <IconButton

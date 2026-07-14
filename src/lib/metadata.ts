@@ -4,20 +4,16 @@ import type { Metadata } from "next";
  * Site-wide metadata constants
  */
 export const SITE_CONFIG = {
-  name: "Brian Lovin",
-  title: "Brian Lovin",
-  description:
-    "Designer and software engineer living in San Francisco. Currently designing AI products at Notion.",
-  url: "https://brianlovin.com",
+  name: "TeflonOfJoy",
+  title: "TeflonOfJoy",
+  description: "Developer building things for the web. My personal site, projects, and notes.",
+  url: "https://teflonofjoy.dev",
   author: {
-    name: "Brian Lovin",
-    twitter: "@brian_lovin",
-    twitterUrl: "https://x.com/brian_lovin",
-    github: "https://github.com/brianlovin",
+    name: "TeflonOfJoy",
+    github: "https://github.com/TeflonOfJoy",
   },
   social: {
     twitter: {
-      handle: "@brian_lovin",
       cardType: "summary_large_image" as const,
     },
   },
@@ -57,7 +53,6 @@ export const DEFAULT_METADATA: Metadata = {
     card: SITE_CONFIG.social.twitter.cardType,
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
-    creator: SITE_CONFIG.author.twitter,
     images: ["/img/og.png"],
   },
   robots: {
@@ -74,7 +69,7 @@ export const DEFAULT_METADATA: Metadata = {
   },
   manifest: "/site.webmanifest",
   appleWebApp: {
-    title: "Brian Lovin",
+    title: SITE_CONFIG.title,
   },
 };
 
@@ -145,7 +140,6 @@ export function createMetadata(params: CreateMetadataParams = {}): Metadata {
       card: SITE_CONFIG.social.twitter.cardType,
       title: title || SITE_CONFIG.title,
       description,
-      creator: SITE_CONFIG.author.twitter,
       images: [ogImage],
     },
     robots: {
@@ -171,7 +165,7 @@ export function createWebSiteJsonLd() {
       "@type": "Person",
       name: SITE_CONFIG.author.name,
       url: SITE_CONFIG.url,
-      sameAs: [SITE_CONFIG.author.twitter, SITE_CONFIG.author.github],
+      sameAs: [SITE_CONFIG.author.github],
     },
   };
 }
@@ -204,7 +198,7 @@ export function createArticleJsonLd(params: ArticleJsonLdParams) {
       "@type": "Person",
       name: SITE_CONFIG.author.name,
       url: SITE_CONFIG.url,
-      sameAs: [SITE_CONFIG.author.twitter, SITE_CONFIG.author.github],
+      sameAs: [SITE_CONFIG.author.github],
     },
     publisher: {
       "@type": "Person",
@@ -225,17 +219,8 @@ export function createPersonJsonLd() {
     name: SITE_CONFIG.author.name,
     url: SITE_CONFIG.url,
     description: SITE_CONFIG.description,
-    sameAs: [
-      SITE_CONFIG.author.twitter,
-      SITE_CONFIG.author.github,
-      "https://www.youtube.com/@brian_lovin",
-    ],
-    jobTitle: "Product Designer",
-    worksFor: {
-      "@type": "Organization",
-      name: "Notion",
-      url: "https://notion.com",
-    },
+    sameAs: [SITE_CONFIG.author.github],
+    jobTitle: "Developer",
   };
 }
 

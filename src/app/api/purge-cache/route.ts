@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { errorResponse } from "@/lib/api-utils";
 import { invalidateNotionCache } from "@/lib/notion";
 
-const CONTENT_TYPES = ["writing", "til", "ama", "stack", "sites", "all"] as const;
+const CONTENT_TYPES = ["til", "stack", "sites", "all"] as const;
 type ContentType = (typeof CONTENT_TYPES)[number];
 
 /**
@@ -16,23 +16,11 @@ const PURGE_CONFIG: Record<
   Exclude<ContentType, "all">,
   { patterns: string[]; tags: string[]; paths: string[]; pagePaths: string[] }
 > = {
-  writing: {
-    patterns: ["notion:writing:*"],
-    tags: ["notion:writing"],
-    paths: ["/writing", "/api/writing"],
-    pagePaths: ["/writing/[slug]"],
-  },
   til: {
     patterns: ["notion:til:*"],
     tags: ["notion:til"],
     paths: ["/til", "/api/til"],
     pagePaths: ["/til/[slug]"],
-  },
-  ama: {
-    patterns: ["notion:ama:*"],
-    tags: ["notion:ama"],
-    paths: ["/ama", "/api/ama"],
-    pagePaths: ["/ama/[id]"],
   },
   stack: {
     patterns: ["notion:stack:*"],
@@ -61,8 +49,7 @@ async function purgeCache(request: Request): Promise<NextResponse> {
     return errorResponse(`Invalid type. Must be one of: ${CONTENT_TYPES.join(", ")}`, 400);
   }
 
-  const types =
-    type === "all" ? (["writing", "til", "ama", "stack", "sites"] as const) : ([type] as const);
+  const types = type === "all" ? (["til", "stack", "sites"] as const) : ([type] as const);
   const results: Record<string, number> = {};
 
   for (const t of types) {

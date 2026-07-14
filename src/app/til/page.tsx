@@ -10,7 +10,7 @@ import { getTilEntriesWithContent } from "@/lib/til";
 export const metadata: Metadata = {
   ...createMetadata({
     title: "TIL",
-    description: "Today I Learned - Quick notes and discoveries from Brian Lovin.",
+    description: "Today I Learned - Quick notes and discoveries from TeflonOfJoy.",
     path: "/til",
   }),
   alternates: {

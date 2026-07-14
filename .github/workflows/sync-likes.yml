@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: sync likes to notion
-        run: curl "https://brianlovin.com/api/likes/sync?token=${{ secrets.LIKES_SYNC_TOKEN }}"
+        run: curl "https://teflonofjoy.dev/api/likes/sync?token=${{ secrets.LIKES_SYNC_TOKEN }}"

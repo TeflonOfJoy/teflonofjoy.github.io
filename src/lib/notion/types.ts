@@ -11,8 +11,6 @@ import type {
 
 // Re-export generated Zod schemas and types
 export {
-  type AMA,
-  AMASchema,
   type DesignDetailsEpisodes,
   DesignDetailsEpisodesSchema,
   type GoodWebsites,
@@ -25,8 +23,6 @@ export {
   StackSchema,
   type TIL,
   TILSchema,
-  type Writing,
-  WritingSchema,
 } from "../../../schemas/notionSchemas";
 
 // Re-export commonly used Notion SDK types
@@ -128,20 +124,6 @@ export type GoodWebsiteItem = {
 // Good Website item type with date for RSS feed
 export type GoodWebsiteItemWithDate = GoodWebsiteItem & {
   createdTime: string;
-};
-
-// AMA item types
-export type NotionAmaItem = {
-  id: string;
-  title: string;
-  description: string | null;
-  status: string;
-  answeredAt: string;
-  createdAt: string;
-};
-
-export type NotionAmaItemWithContent = NotionAmaItem & {
-  blocks: ProcessedBlock[];
 };
 
 // Listening history item type

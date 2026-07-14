@@ -4,31 +4,20 @@ import Link from "next/link";
 
 import { ProjectsList } from "@/components/home/ProjectsList";
 import { ChevronRight } from "@/components/icons/ChevronRight";
-import { GitHubIcon, XIcon, YouTubeIcon } from "@/components/icons/SocialIcons";
-import {
-  List,
-  ListItem,
-  ListItemLabel,
-  Section,
-  SectionHeading,
-} from "@/components/shared/ListComponents";
-import { createMetadata, createPersonJsonLd } from "@/lib/metadata";
-import { buildSlug } from "@/lib/short-id";
-import { getAllWritingPosts } from "@/lib/writing";
+import { GitHubIcon } from "@/components/icons/SocialIcons";
+import { ListItem, Section, SectionHeading } from "@/components/shared/ListComponents";
+import { createMetadata, createPersonJsonLd, SITE_CONFIG } from "@/lib/metadata";
+
+const BLOG_URL = "https://blog.teflonofjoy.dev";
 
 export const metadata: Metadata = createMetadata({
-  title: "Brian Lovin",
-  description:
-    "Brian Lovin is a designer and software engineer living in San Francisco, currently designing AI products at Notion.",
+  title: SITE_CONFIG.title,
+  description: SITE_CONFIG.description,
   path: "/",
 });
 
-export const dynamic = "force-dynamic";
-
-export default async function Home() {
+export default function Home() {
   const personJsonLd = createPersonJsonLd();
-  const allPosts = await getAllWritingPosts();
-  const recentPosts = allPosts.slice(0, 5);
 
   return (
     <>
@@ -42,7 +31,7 @@ export default async function Home() {
             <Section>
               <Image
                 src="/img/avatar.jpg"
-                alt="Brian Lovin"
+                alt="TeflonOfJoy"
                 width={60}
                 height={60}
                 draggable={false}
@@ -50,27 +39,16 @@ export default async function Home() {
               />
 
               <h1 id="home-title" className="text-2xl font-semibold">
-                Brian Lovin
+                TeflonOfJoy
               </h1>
 
               <p className="text-secondary text-2xl font-semibold text-pretty">
-                I&apos;m a software designer living in San Francisco, currently making AI products
-                at Notion.
+                I&apos;m a developer building things for the web.
               </p>
             </Section>
 
             <Section className="flex flex-row gap-2">
-              <ListItem href="https://x.com/brian_lovin" className="group -ml-1 p-2">
-                <XIcon size={28} className="text-quaternary group-hover:text-primary select-none" />
-              </ListItem>
-              <ListItem href="https://www.youtube.com/@brian_lovin" className="group p-2">
-                <YouTubeIcon
-                  size={32}
-                  className="text-quaternary select-none group-hover:text-[#FF0302]"
-                  playIconClassName="fill-[var(--background-color-main)] sm:fill-[var(--background-color-elevated)]  group-hover:fill-white"
-                />
-              </ListItem>
-              <ListItem href="https://github.com/brianlovin" className="group p-2">
+              <ListItem href="https://github.com/TeflonOfJoy" className="group -ml-1 p-2">
                 <GitHubIcon
                   size={28}
                   className="text-quaternary group-hover:text-primary select-none"
@@ -79,7 +57,12 @@ export default async function Home() {
             </Section>
 
             <Section>
-              <Link href="/writing" className="group flex items-center">
+              <Link
+                href={BLOG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center"
+              >
                 <SectionHeading className="group-hover:text-primary transition-colors">
                   Writing
                 </SectionHeading>
@@ -88,20 +71,18 @@ export default async function Home() {
                   className="text-quaternary group-hover:text-primary transition-all duration-150 group-hover:translate-x-0.5"
                 />
               </Link>
-              <List>
-                {recentPosts
-                  .filter((post) => post.shortId)
-                  .map((post) => {
-                    return (
-                      <ListItem
-                        key={post.id}
-                        href={`/writing/${buildSlug(post.title, post.shortId!)}`}
-                      >
-                        <ListItemLabel className="line-clamp-none">{post.title}</ListItemLabel>
-                      </ListItem>
-                    );
-                  })}
-              </List>
+              <p className="text-secondary">
+                I write on my blog at{" "}
+                <a
+                  href={BLOG_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-4"
+                >
+                  blog.teflonofjoy.dev
+                </a>
+                .
+              </p>
             </Section>
 
             <Section>

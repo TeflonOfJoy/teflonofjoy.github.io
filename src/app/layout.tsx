@@ -5,7 +5,7 @@ import { Inter, Source_Serif_4 } from "next/font/google";
 import { PropsWithChildren } from "react";
 
 import { ClientShell } from "@/components/ClientShell";
-import { DEFAULT_METADATA, SITE_CONFIG } from "@/lib/metadata";
+import { DEFAULT_METADATA } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 
 import { Providers } from "./providers";
@@ -19,11 +19,6 @@ const ptSerif = Source_Serif_4({
 
 export const metadata: Metadata = {
   ...DEFAULT_METADATA,
-  alternates: {
-    types: {
-      "application/rss+xml": `${SITE_CONFIG.url}/writing/rss.xml`,
-    },
-  },
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {

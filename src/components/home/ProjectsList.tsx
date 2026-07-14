@@ -8,12 +8,6 @@ import {
 
 const projects = [
   {
-    name: "HN",
-    href: "/hn",
-    description: "A minimal hacker news reader",
-    external: false,
-  },
-  {
     name: "App Dissection",
     href: "/app-dissection",
     description: "Breaking down well-designed apps",
@@ -23,12 +17,6 @@ const projects = [
     name: "Stack",
     href: "/stack",
     description: "My favorite apps and tools",
-    external: false,
-  },
-  {
-    name: "AMA",
-    href: "/ama",
-    description: "Ask me anything",
     external: false,
   },
   {
@@ -48,54 +36,6 @@ const projects = [
     href: "/sites",
     description: "A curated list of well-designed websites",
     external: false,
-  },
-  {
-    name: "Shiori",
-    href: "https://www.shiori.sh",
-    description: "A beautifully simple read-it-later app",
-    external: true,
-  },
-  {
-    name: "Staff Design",
-    href: "https://staff.design",
-    description: "Navigating the IC career path",
-    external: true,
-  },
-  {
-    name: "Design Details",
-    href: "https://designdetails.fm",
-    description: "A podcast about design and technology",
-    external: true,
-  },
-  {
-    name: "How to Computer Better",
-    href: "https://brianlovin.notion.site/how-to-computer-better",
-    description: "How to use a computer better",
-    external: true,
-  },
-  {
-    name: "Crit",
-    href: "https://www.youtube.com/playlist?list=PLJu44Klx1pB_8GSOUeDNDllPICvMJKSut",
-    description: "Solicited app redesigns",
-    external: true,
-  },
-  {
-    name: "How Terminals Work",
-    href: "https://how-terminals-work.vercel.app/",
-    description: "A visual guide to understand terminals",
-    external: true,
-  },
-  {
-    name: "HN CLI",
-    href: "https://github.com/brianlovin/hn-cli",
-    description: "Hacker News in your terminal",
-    external: true,
-  },
-  {
-    name: "Tax UI",
-    href: "https://tax-ui.brianlovin.com/",
-    description: "Chat with your tax returns",
-    external: true,
   },
 ];
 

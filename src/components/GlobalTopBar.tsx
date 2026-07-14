@@ -129,7 +129,7 @@ export function GlobalTopBar() {
         </IconButton>
         {!isHomePage && (
           <BreadcrumbLabel href="/" onClick={() => setIsOpen(false)}>
-            Brian Lovin
+            TeflonOfJoy
           </BreadcrumbLabel>
         )}
         {currentNavItem && !isHomePage && (

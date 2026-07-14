@@ -24,33 +24,6 @@ export const StackSchema = z.object({
 
 export type Stack = z.infer<typeof StackSchema>;
 
-export const AMASchema = z.object({
-  "Answered At": z.string().optional(),
-  "Created At": z.string().optional(),
-  Likes: z.number().optional(),
-  Status: z.enum(["Won't answer", "Unanswered", "Answered"]).optional(),
-  Button: z.any().optional(),
-  Description: z.string().optional(),
-  Name: z.string().optional(),
-});
-
-export type AMA = z.infer<typeof AMASchema>;
-
-export const WritingSchema = z.object({
-  Slug: z.string().optional(),
-  "Generate Short ID": z.any().optional(),
-  Excerpt: z.string().optional(),
-  Published: z.string().optional(),
-  Likes: z.number().optional(),
-  FeatureImage: z.string().optional(),
-  "Optimize images": z.any().optional(),
-  "Short ID": z.string().optional(),
-  "Created time": z.string().optional(),
-  Name: z.string().optional(),
-});
-
-export type Writing = z.infer<typeof WritingSchema>;
-
 export const DesignDetailsEpisodesSchema = z.object({
   "Analytics Fetched": z.boolean().optional(),
   Status: z.enum(["draft", "published", "scheduled", "private"]).optional(),

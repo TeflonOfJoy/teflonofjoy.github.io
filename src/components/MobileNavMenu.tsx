@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 
 import { sidebarAtom } from "@/atoms/sidebar";
-import { GitHubIcon, XIcon, YouTubeIcon } from "@/components/icons/SocialIcons";
+import { GitHubIcon } from "@/components/icons/SocialIcons";
 import { getMainNavigationItems, getProjectNavigationItems } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 
@@ -85,26 +85,8 @@ export function MobileNavMenu() {
             {/* Social links */}
             <div className="mt-8 flex flex-row items-center gap-4">
               <Link
-                href="https://x.com/brian_lovin"
+                href="https://github.com/TeflonOfJoy"
                 className="text-quaternary hover:text-primary -ml-2 p-2"
-                onClick={() => setIsOpen(false)}
-              >
-                <XIcon size={24} />
-              </Link>
-              <Link
-                href="https://www.youtube.com/@brian_lovin"
-                className="group p-2"
-                onClick={() => setIsOpen(false)}
-              >
-                <YouTubeIcon
-                  size={28}
-                  className="text-quaternary group-hover:text-[#FF0302]"
-                  playIconClassName="fill-[var(--background-color-elevated)] group-hover:fill-white"
-                />
-              </Link>
-              <Link
-                href="https://github.com/brianlovin"
-                className="text-quaternary hover:text-primary p-2"
                 onClick={() => setIsOpen(false)}
               >
                 <GitHubIcon size={24} />

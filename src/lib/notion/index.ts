@@ -3,7 +3,6 @@ export { notion } from "./client";
 
 // Types
 export type {
-  AMA,
   // SDK types
   BlockObjectResponse,
   // Zod schemas and types
@@ -12,8 +11,6 @@ export type {
   GoodWebsiteItem,
   GoodWebsiteItemWithDate,
   Music,
-  NotionAmaItem,
-  NotionAmaItemWithContent,
   NotionDesignDetailsEpisodeItem,
   NotionItem,
   NotionListeningHistoryItem,
@@ -30,18 +27,10 @@ export type {
   RichTextItemResponse,
   Stack,
   TIL,
-  Writing,
 } from "./types";
 
 // Zod schemas
-export {
-  AMASchema,
-  DesignDetailsEpisodesSchema,
-  MusicSchema,
-  StackSchema,
-  TILSchema,
-  WritingSchema,
-} from "./types";
+export { DesignDetailsEpisodesSchema, MusicSchema, StackSchema, TILSchema } from "./types";
 
 // Type guards and utilities
 export { extractPlainText, hasProperties, isBlockObjectResponse } from "./types";
@@ -51,9 +40,6 @@ export { getAllBlocks, processBlockFromResponse } from "./blocks";
 
 // Queries
 export {
-  getAmaDatabaseItems,
-  // AMA
-  getAmaItemContent,
   // Design Details
   getDesignDetailsEpisodeDatabaseItems,
   // Generic
@@ -71,20 +57,10 @@ export {
   getTilByShortId,
   getTilDatabaseItems,
   getTilItemContent,
-  // Writing
-  getWritingDatabaseItems,
-  getWritingPostByShortId,
-  getWritingPostContent,
-  getWritingPostContentBySlug,
 } from "./queries";
 
 // Cache
 export { invalidateNotionCache } from "./cache";
 
 // Mutations
-export {
-  createAmaQuestion,
-  createStackItem,
-  updateStackItem,
-  updateWritingShortId,
-} from "./mutations";
+export { createStackItem, updateStackItem } from "./mutations";
