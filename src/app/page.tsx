@@ -7,6 +7,7 @@ import {
   List,
   ListItem,
   ListItemLabel,
+  ListItemSubLabel,
   Section,
   SectionHeading,
 } from "@/components/shared/ListComponents";
@@ -67,9 +68,10 @@ export default function Home() {
                   href={BLOG_URL}
                   className="flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-2"
                 >
-                  <ListItemLabel className="sm:line-clamp-1">
-                    Re:Furbed Starting a Blog in Another World
-                  </ListItemLabel>
+                  <ListItemLabel className="sm:line-clamp-1">Re:Furbed</ListItemLabel>
+                  <ListItemSubLabel className="flex-1">
+                    Starting a Blog in Another World
+                  </ListItemSubLabel>
                 </ListItem>
               </List>
             </Section>
