@@ -1,4 +1,4 @@
-import chromium from "@sparticuz/chromium";
+import chromium from "@sparticuz/chromium-min";
 import puppeteer from "puppeteer-core";
 
 const VIEWPORT = {
@@ -10,6 +10,11 @@ const VIEWPORT = {
 const TIMEOUT = 30000; // 30 seconds
 const SETTLE_DELAY = 1500; // Wait for animations/transitions to settle
 
+// Vercel/Lambda: Chromium binaries are downloaded at runtime from this pack URL.
+const CHROMIUM_PACK_URL =
+  process.env.CHROMIUM_REMOTE_EXEC_PATH ??
+  "https://github.com/Sparticuz/chromium/releases/download/v143.0.0/chromium-v143.0.0-pack.tar";
+
 // Check if running in serverless environment
 const IS_SERVERLESS = !!process.env.AWS_LAMBDA_FUNCTION_NAME || !!process.env.VERCEL;
 
@@ -17,13 +22,19 @@ const IS_SERVERLESS = !!process.env.AWS_LAMBDA_FUNCTION_NAME || !!process.env.VE
  * Get the Chrome executable path based on environment
  */
 async function getExecutablePath(): Promise<string> {
-  if (IS_SERVERLESS) {
-    return chromium.executablePath();
+  if (process.env.CHROME_PATH) {
+    return process.env.CHROME_PATH;
   }
 
-  // Local development - try common Chrome paths on macOS
+  if (IS_SERVERLESS) {
+    return chromium.executablePath(CHROMIUM_PACK_URL);
+  }
+
   const { execSync } = await import("child_process");
   const chromePaths = [
+    "/usr/bin/google-chrome-stable",
+    "/usr/bin/chromium",
+    "/usr/bin/google-chrome",
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     "/Applications/Chromium.app/Contents/MacOS/Chromium",
     "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
@@ -48,7 +59,7 @@ async function getExecutablePath(): Promise<string> {
  * Works in both local development (uses system Chrome) and serverless (uses @sparticuz/chromium)
  */
 export async function captureScreenshot(url: string): Promise<Buffer> {
-  const executablePath = process.env.CHROME_PATH || (await getExecutablePath());
+  const executablePath = await getExecutablePath();
 
   const browser = await puppeteer.launch({
     args: IS_SERVERLESS

@@ -17,7 +17,7 @@
     "@base-ui/react": "^1.1.0",
     "@notionhq/client": "^5.4.0",
     "@paper-design/shaders-react": "^0.0.72",
-    "@sparticuz/chromium": "^143.0.4",
+    "@sparticuz/chromium-min": "143.0.4",
     "@tanstack/react-virtual": "^3.13.18",
     "@types/dompurify": "^3.2.0",
     "@upstash/ratelimit": "^2.0.8",

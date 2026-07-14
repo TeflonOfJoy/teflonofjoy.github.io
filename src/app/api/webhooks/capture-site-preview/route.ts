@@ -1,3 +1,7 @@
+import type {
+  PageObjectResponse,
+  UpdatePageParameters,
+} from "@notionhq/client/build/src/api-endpoints";
 import { NextResponse } from "next/server";
 
 import { errorResponse } from "@/lib/api-utils";
@@ -6,14 +10,44 @@ import { notion } from "@/lib/notion";
 import { uploadBufferToR2 } from "@/lib/r2/storage";
 import { captureScreenshot } from "@/lib/screenshot";
 
+// Screenshot + upload can exceed Vercel's default 10s limit.
+export const maxDuration = 60;
+
+type NotionPageProperties = PageObjectResponse["properties"];
+type NotionUpdateProperties = NonNullable<UpdatePageParameters["properties"]>;
+
+function pickExistingProperties(
+  available: NotionPageProperties,
+  properties: NotionUpdateProperties,
+): NotionUpdateProperties {
+  return Object.fromEntries(
+    Object.entries(properties).filter(([name]) => name in available),
+  ) as NotionUpdateProperties;
+}
+
+function extractUrlFromPayload(urlProperty: unknown): string | undefined {
+  if (!urlProperty) return undefined;
+  if (typeof urlProperty === "string") return urlProperty;
+  if (typeof urlProperty === "object" && urlProperty !== null && "url" in urlProperty) {
+    const url = (urlProperty as { url?: string | null }).url;
+    return url ?? undefined;
+  }
+  return undefined;
+}
+
+function extractUrlFromPage(page: PageObjectResponse): string | undefined {
+  const urlProperty = page.properties.URL;
+  return urlProperty?.type === "url" ? (urlProperty.url ?? undefined) : undefined;
+}
+
 /**
  * Webhook endpoint to capture a website screenshot and store it in R2
  *
  * POST /api/webhooks/capture-site-preview
- * Notion automation payload: { data: { id, properties: { URL } } }
+ * Notion automation payload: { data: { id, properties?: { URL } } }
  *
  * Flow:
- * 1. Extract page ID and URL from Notion webhook
+ * 1. Extract page ID and URL from webhook payload or Notion page
  * 2. Set status to "Processing"
  * 3. Capture screenshot using Puppeteer
  * 4. Optimize image (resize, compress to WebP)
@@ -31,30 +65,23 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    // Extract page ID and URL from Notion webhook payload
     const pageId = body.data?.id;
-    const urlProperty = body.data?.properties?.URL;
-
-    // Validate required fields
     if (!pageId) {
       console.error("Missing required field: data.id (pageId)", body);
       return errorResponse("Missing required field: data.id (pageId)", 400);
     }
 
-    if (!urlProperty) {
-      console.error("Missing required field: data.properties.URL", body);
-      return errorResponse("Missing required field: data.properties.URL", 400);
-    }
+    const currentPage = (await notion.pages.retrieve({
+      page_id: pageId,
+    })) as PageObjectResponse;
 
-    // Extract URL from Notion property object
-    const url = typeof urlProperty === "string" ? urlProperty : urlProperty.url;
-
+    const url =
+      extractUrlFromPayload(body.data?.properties?.URL) ?? extractUrlFromPage(currentPage);
     if (!url) {
       console.error("URL property is empty or invalid", body);
       return errorResponse("URL property is empty or invalid", 400);
     }
 
-    // Validate URL format
     try {
       new URL(url);
     } catch {
@@ -62,13 +89,8 @@ export async function POST(request: Request) {
       return errorResponse("Invalid URL format", 400);
     }
 
-    // Check current status to prevent duplicate processing
-    const currentPage = await notion.pages.retrieve({ page_id: pageId });
-    const currentStatus = (
-      currentPage as { properties: { "Preview Status"?: { select?: { name: string } | null } } }
-    ).properties?.["Preview Status"]?.select?.name;
-
-    if (currentStatus === "Processing") {
+    const currentStatus = currentPage.properties["Preview Status"];
+    if (currentStatus?.type === "select" && currentStatus.select?.name === "Processing") {
       console.log(`Page ${pageId} is already being processed, skipping`);
       return NextResponse.json(
         { success: true, message: "Already processing", skipped: true },
@@ -79,10 +101,10 @@ export async function POST(request: Request) {
     // Step 1: Set status to Processing
     await notion.pages.update({
       page_id: pageId,
-      properties: {
+      properties: pickExistingProperties(currentPage.properties, {
         "Preview Status": { select: { name: "Processing" } },
-        "Preview Error": { rich_text: [] }, // Clear any previous error
-      },
+        "Preview Error": { rich_text: [] },
+      }),
     });
 
     try {
@@ -104,11 +126,11 @@ export async function POST(request: Request) {
       // Step 5: Update Notion page with success
       await notion.pages.update({
         page_id: pageId,
-        properties: {
+        properties: pickExistingProperties(currentPage.properties, {
           "Preview Status": { select: { name: "Done" } },
           "Preview Image": { url: r2Url },
           "Preview Updated": { date: { start: new Date().toISOString() } },
-        },
+        }),
       });
 
       return NextResponse.json(
@@ -120,18 +142,17 @@ export async function POST(request: Request) {
         { status: 200 },
       );
     } catch (captureError) {
-      // Update Notion with error status
       const errorMessage = captureError instanceof Error ? captureError.message : "Unknown error";
       console.error("Error capturing screenshot:", captureError);
 
       await notion.pages.update({
         page_id: pageId,
-        properties: {
+        properties: pickExistingProperties(currentPage.properties, {
           "Preview Status": { select: { name: "Error" } },
           "Preview Error": {
             rich_text: [{ text: { content: errorMessage.slice(0, 2000) } }],
           },
-        },
+        }),
       });
 
       throw captureError;
